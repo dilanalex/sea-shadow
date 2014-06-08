@@ -1,0 +1,82 @@
+@(stateForm: Form[models.State],countryId: ObjectId)(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name"/>
+   
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+
+@main({Messages("backoffice.state.new.heading")}, null) {
+
+@if(flash.data.contains("message")){
+		<div class="alert alert-success">@flash.get("message")</div>  
+	} 
+ 	@if(flash.data.contains("errormessage")){ 
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+   @stateForm.globalError.map { error =>        
+        <div class='row'>
+          <div class="alert alert-error">@error.message</div>
+        </div>        
+   }
+
+<h1>@{Messages("backoffice.state.new.heading")} </h1>
+<br>
+
+    <strong>@{Messages("backoffice.state.new.code")}</strong><br>
+    @Html({Messages("backoffice.state.new.code.desc", "<br>")})
+    
+    @form(action = controllers.backoffice.routes.States.save, 'class -> "form-vertical", 'id -> "stateForm", 'name -> "stateForm") { 
+    
+ 		   @input(stateForm("stateId"), "", 'hidden) 
+ 		  <input type="hidden" id="countryId" name="countryId" value="@countryId">
+ 		   
+ 		   @input(stateForm("code"), "", 'text)
+ 		   
+ 		   <strong>@{Messages("backoffice.state.new.name")}</strong>
+ 		   @input(stateForm("name"), "", 'text)
+ 		   
+ 		   <input type="submit" name="save" id="save" class="btn btn-primary" value="Save"/>
+ 		   
+ 		   	<a class="btn btn-primary" id="cancel" href="@controllers.backoffice.routes.Countries.show(countryId,2)">
+			 @{Messages("common.back")}
+			</a>  
+   
+    
+    }
+
+
+}

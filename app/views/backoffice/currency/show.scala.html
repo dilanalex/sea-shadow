@@ -1,0 +1,151 @@
+@(currencyForm: Form[models.Currency])(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>  
+}
+
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }
+      
+    </div>
+  </div>  
+}
+
+
+
+@cpanel({Messages("backoffice.currency.edit.title")}, null) {
+
+
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+   @currencyForm.globalError.map { error =>        
+        <div class='row'>
+          <div class="alert alert-error">@error.message</div>
+        </div>        
+   }
+     
+	@form(action = controllers.backoffice.routes.Currencies.save, 'class -> "form-vertical", 'id -> "currencyForm", 'name -> "currencyForm") {
+	 
+		
+	    
+	  <h3>@{Messages("backoffice.currency.edit.heading")}</h3>
+	  
+	  	<br>
+	  
+	  	@input(currencyForm("currencyId"), "", 'hidden) 
+	    
+	    <strong>@{Messages("backoffice.currency.edit.code")}</strong><br>
+	    @{Messages("backoffice.currency.edit.code.desc")}<br>
+	    <a href="http://en.wikipedia.org/wiki/ISO_4217">http://en.wikipedia.org/wiki/ISO_4217</a><br>
+	    @input(currencyForm("iso"), "",'text)
+	    
+	    
+	    <strong>@{Messages("backoffice.currency.edit.name")}</strong>   
+	    @input(currencyForm("name"), "", 'text)
+	   
+	    <strong>@{Messages("backoffice.currency.edit.symbol")}</strong><br>
+	    @input(currencyForm("symbol"), "",'text)
+	
+		<strong>@{Messages("backoffice.currency.edit.rate")}</strong><br>
+	    @input(currencyForm("rate"), "", 'text)
+	    
+	    <div class="controls">
+		   <input type="checkbox" id="@currencyForm("enabled").id" 
+		   name="@currencyForm("enabled").id" value="true" @if(currencyForm("enabled").value.isDefined){ checked} onClick="setCheckBoxes()"/> 
+		   <strong>@{Messages("backoffice.currency.edit.enable")}</strong><br>
+		   @{Messages("backoffice.currency.edit.enable.desc")}
+		</div>
+		
+		<br>
+		
+		<div id="baseCurrencyDiv" name="baseCurrencyDiv"> 
+			<div class="controls">
+			   <input type="checkbox" id="@currencyForm("baseCurrency").id" 
+			   name="@currencyForm("baseCurrency").id" value="true" @if(currencyForm("baseCurrency").value.isDefined){ checked}  onClick="setCheckBoxes()"/> 
+			   <strong>@{Messages("backoffice.currency.edit.basecur")}</strong><br>
+			   @{Messages("backoffice.currency.edit.basecur.desc")}
+			</div>
+		</div>
+			
+	    <br>
+	    <input type="submit" name="save" id="save" class="btn btn-primary" value="Save"/>
+	  
+	  	<a class="btn btn-medium btn-danger" href="#@currencyForm("currencyId").value" data-toggle="modal">
+	  	  <i class="icon-trash icon-white"></i></a>
+		   <div class="modal hide" id="@currencyForm("currencyId").value">	       
+	    		<div class="modal-body"><p>@{Messages("backoffice.currency.del.confirm")}</p></div>
+	        	<div class="modal-footer">
+		    		<a href="#" class="btn" data-dismiss="modal">@{Messages("common.no")}</a>
+		    		<a href="@controllers.backoffice.routes.Currencies.delete(new ObjectId(currencyForm("currencyId").value.get))" class="btn btn-primary">@{Messages("common.yes")}</a>
+		      	</div>
+	    	</div>		    
+	    
+	    <input type="hidden" id="isBaseCurrency" name="isBaseCurrency" value="@if(currencyForm("baseCurrency").value.isDefined){true}else{false}"/>
+	    
+	   <a class="btn btn-primary" id="Back" href="@controllers.backoffice.routes.Currencies.list()">Back</a>    
+	    
+	   
+	 }
+	 
+	 
+	 
+	 <script language ="JavaScript">
+	 
+	 	function setCheckBoxes(){
+	 		
+			if(document.getElementById("isBaseCurrency").value == 'true'){
+				document.getElementById("enabled").checked=true;
+				document.getElementById("baseCurrency").checked=true;
+	 		}
+			else{
+				
+				if(document.getElementById("enabled").checked==true){
+		 			document.getElementById("baseCurrencyDiv").style.visibility = 'visible';
+		 		}
+		 		else{
+		 			document.getElementById("enabled").checked=false;
+		 			document.getElementById("baseCurrencyDiv").style.visibility = 'hidden';
+		 		}
+			}
+	 	
+	 	}
+	 	
+	 	showBase();
+	 
+	 
+	 </script>
+
+
+      
+
+}

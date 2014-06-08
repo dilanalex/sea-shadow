@@ -1,0 +1,252 @@
+sprint = Sprint 3: Lever du soleil l'après-midi
+home = Maison
+products = Produits
+cart = chariot
+home.big.label = Restgate Commerce. Ce n'est pas grand, mais il est intelligent
+home.new.customer = Nouveau ? Commencez
+home.have.account = Vous avez? Connectez
+home.browse.btn = Rechercher sur notre boutique
+
+home.main.profile.lbl = Profil
+home.main.orders.lbl = Ordres
+home.main.signout.lbl = Déconnexion
+
+common.name = Nom
+common.shipping.adr = Adresse d'expédition
+common.billing.adr = Adresse de Facturation
+common.cart.details = détails de la commande
+common.sales.tax = La taxe de vente (impôt)
+common.shippingHandling.fee = Frais d'expédition et de manutention
+common.shipping.tax = Frais de port non (l'impôt)
+common.grand.total = Total
+common.no.search.provider = Aucun fournisseur de recherche est disponible pour le moment!
+common.nothing.display = Rien à afficher
+common.yes = Oui
+common.no = Aucun
+common.back = Arrière
+common.save = sauver
+common.add = ajouter
+common.required = requis
+
+common.paging.pre = Précédent
+common.paging.next = Suivant
+common.paging.desc = Visualisation {0} à {1} de {2}
+
+product.no.products = Ce ne sont pas les produits que vous cherchez!
+product.search.btn = Recherche de produits
+product.add.basket.btn = Ajouter à votre panier
+product.related.products = Produits connexes
+product.search.no = Produit que vous avez cherché n'est plus disponible!
+product.empty.search = Vous avez cherché pour rien, ci-dessous sont les produits disponibles tous!
+
+cart.heading = Panier
+cart.no.items = Il n'y a aucun article dans le panier. S'il vous plaît consulter notre {0} produits. {1}
+cart.item.lbl = Point
+cart.quantity.lbl = Quantité
+cart.price.lbl = Prix
+cart.totaltax.lbl = Total Tax
+cart.total.lbl = Total
+cart.delete.lbl = Effacer
+cart.delete.btn = Effacer
+cart.checkout.btn = Caisse
+
+cart.checkout.heading = PASSER LA COMMANDE
+cart.checkout.subheading = VOS COORDONNÉES DE LIVRAISON
+cart.checkout.fname.lbl = Prénom
+cart.checkout.sname.lbl = Nom de Famille
+cart.checkout.adr1.lbl = Adresse Ligne 1
+cart.checkout.adr2.lbl = Adresse Ligne 2
+cart.checkout.city.lbl = Ville
+cart.checkout.pcode.lbl = Poster code
+cart.checkout.country.lbl = Pays
+cart.checkout.subheading2 = VOS INFORMATIONS DE FACTURATION
+cart.checkout.subheading3 = Mon adresse de livraison et de facturation sont les mêmes.
+cart.checkout.complete.btn = REMPLIR D'ACHAT
+cart.checkout.complete.sel.country = --- Choisissez un pays ---
+
+order.thankyou = Merci
+order.ref.lbl = Votre Réf Ordre
+order.cust.detail.lbl = Détails des clients:
+
+order.history.heading = Historique des commandes
+order.history.empty.msg = Vous avez encore rien acheté. {0} Allez acheter des trucs. {1}
+order.history.date = Date
+order.history.orderid = N de commande
+order.history.total = Total
+
+customer.email.lbl = E-mail
+customer.heading = Nouveaux clients
+customer.register.here = Inscrivez-vous ici
+customer.pwd.lbl = Mot de passe
+customer.pwd.confirm.lbl = Confirmer Mot de passe
+customer.register.btn = S'inscrire
+customer.register.pwd.not.match = Les mots de passe ne correspondent pas
+customer.register.success = Enregistré à la clientèle!
+customer.register.exist = Client existent!
+customer.login.heading = Les clients du scrutin
+customer.login.label = Connectez-vous
+customer.login.btn.lbl = login
+customer.login.invalid.email.pwd = Email ou mot de passe invalide
+customer.login.logout.msg = Vous avez été déconnecté
+customer.profile.pwd.not.match = Ancien mot de passe ne correspond pas à
+customer.profile.newpwd.not.match = Nouveaux mots de passe ne correspondent pas
+customer.profile.user.update = Mise à jour utilisateur!
+
+customer.profile.acc.lbl = Détails du compte
+customer.profile.acc.delivery.adr.lbl = Adresse de livraison
+customer.profile.acc.bill.adr.lbl = Adresse de facturation
+customer.profile.acc.fname = Prénom
+customer.profile.acc.lname = Nom de famille
+customer.profile.acc.email = E-Mail
+customer.profile.acc.old.pwd = Ancien mot de passe
+customer.profile.acc.new.pwd = Nouveau mot de passe
+customer.profile.acc.new.pwd.confirm = Confirmer nouveau mot de passe
+customer.profile.acc.save.all = Enregistrer toutes les modifications
+
+customer.profile.acc.sname = Nom de famille
+customer.profile.acc.add1 = Adresse Ligne 1
+customer.profile.acc.add2 = Adresse ligne 2
+customer.profile.acc.city = Ville
+customer.profile.acc.pcode = Poster code
+customer.profile.acc.country = Pays
+customer.profile.acc.check.lbl = Mon adresse de livraison et de facturation sont les mêmes.
+customer.profile.acc.sel.country = --- Choisissez un pays ---
+
+backoffice.country.edit = Modifier Pays
+backoffice.country.head1 = Pays
+backoffice.country.search.lbl = Filtrer par nom de pays ...
+backoffice.country.search.btn = Filtrer par nom
+backoffice.country.add.btn = Ajouter un nouveau pays
+backoffice.country.name.lbl = Nom du pays
+backoffice.country.code.lbl = Code
+backoffice.country.code3.lbl = Code 3
+backoffice.country.enable.lbl = Activé
+
+backoffice.country.new.tab1 = Pays
+backoffice.country.new.name = Nom*
+backoffice.country.new.ccode1 = 2-digit code ISO pays *
+backoffice.country.new.ccode1.desc = Spécifiez le code pays à 2 lettres. Vous pouvez trouver les noms de pays et des codes ici:
+backoffice.country.new.ccode2 = 3-digit code ISO pays *
+backoffice.country.new.ccode2.desc = Indiquez le code du pays à 3 lettres, par exemple US.
+backoffice.country.new.numccode = Numérique ISO * code du pays
+backoffice.country.new.numccode.desc = Spécifiez code à 3 chiffres pays numérique, par exemple 840 pour US.
+backoffice.country.new.enabled = Activé
+backoffice.country.new.enabled.desc = Pays handicapées ne sont pas représentés sur la boutique en front-end. 
+backoffice.country.new.enabledad =  Activée dans l'Administration
+backoffice.country.new.enabledad.desc = Zone Cochez cette case si vous voulez que le pays doit être activé dans la zone d'administration.
+backoffice.country.del.confirm = Voulez-vous vraiment supprimer ce pays?
+
+backoffice.state.new.tab2 = Etats-
+backoffice.state.new.desc = Définition des états pour le pays. S'il n'y a pas d'état dans le pays, laisser cette liste vide.
+backoffice.state.new.heading = état
+backoffice.state.new.code = Code *
+backoffice.state.new.code.desc = Précisez le code d'état. Vous n'êtes pas limité par les règles sur les codes d'état. {0} Les codes sont utilisés pour se référer Etats dans votre déclaration de coutume et les règles d'expédition.
+backoffice.state.new.name = Nom
+
+backoffice.currency.head1 = Devises
+backoffice.currency.sync.btn = Synchroniser taux de change
+backoffice.currency.isocode = code ISO
+backoffice.currency.name = Nom
+backoffice.currency.symbol = Symbole
+backoffice.currency.rate = Taux
+backoffice.currency.enable = Activé en magasin
+backoffice.currency.basecur = Devise de base
+backoffice.currency.sync.success = Les taux de change ont été synchronisés avec succès!
+backoffice.currency.sync.fail = Les taux de change n'ont pas été synchronisés avec succès!
+backoffice.currency.isocode.exists = Ce code iso existe déjà. S'il vous plaît entrer un unique!
+backoffice.currency.updated = Monnaie mis à jour !
+backoffice.currency.saved = Monnaie Saved!
+backoffice.currency.basecur.err = Cette monnaie est la monnaie de base. S'il vous plaît sélectionner une autre monnaie que la monnaie de base avant de les supprimer!
+backoffice.currency.deleted = Monnaie supprimé !
+
+backoffice.currency.edit.title = Modifier Monnaie
+backoffice.currency.edit.heading = Monnaie
+backoffice.currency.edit.code = * Code de devise ISO
+backoffice.currency.edit.code.desc = Indiquez le code monétaire de 3 lettres. Vous pouvez trouver les noms des devises et des codes ici:
+backoffice.currency.edit.name = * Nom
+backoffice.currency.edit.symbol = * Symbole
+backoffice.currency.edit.rate = * Taux
+backoffice.currency.edit.enable = Activé
+backoffice.currency.edit.enable.desc = Devises handicapées ne sont pas représentés sur la boutique en front-end.
+backoffice.currency.edit.basecur = Devise de base
+backoffice.currency.edit.basecur.desc = Ceci définit cette devise que la monnaie de base dans le magasin.
+backoffice.currency.del.confirm = Voulez-vous vraiment supprimer cette monnaie?
+
+backoffice.tax.title = La liste des classes d'impôt
+backoffice.tax.head1 = La liste des classes d'impôt
+backoffice.tax.search.lbl = Filtrer par nom de la classe d'impôt ...
+backoffice.tax.search.btn = Filtrer par nom
+backoffice.tax.add.btn = Ajout d'une classe nouvelle taxe
+backoffice.tax.name.lbl = Nom
+backoffice.tax.desc.lbl = Description
+backoffice.tax.new.tab1 = Classe de TVA
+backoffice.tax.new.tab2 = Tarifs
+backoffice.tax.tab1.head1 = Classe de TVA
+backoffice.tax.default = Par défaut
+
+backoffice.tax.rate.head1 = Tarifs
+backoffice.tax.rate.country = pays
+backoffice.tax.rate.state = état
+backoffice.tax.rate.zip = Zip
+backoffice.tax.rate.city = ville
+backoffice.tax.rate.rate = taux
+backoffice.tax.rate.priority = priorité
+backoffice.tax.rate.name = Nom de tax
+backoffice.tax.rate.compound = composé
+backoffice.tax.rate.addnew = Ajouter un autre taux
+
+backoffice.ship.title = options d'expédition
+backoffice.ship.name = Nom
+backoffice.ship.type = type d'expédition
+backoffice.ship.desc = description
+backoffice.ship.enablestore = Activer Sur le magasin
+backoffice.ship.enablebackofce = Activer dans le back-office
+backoffice.ship.taxable = imposable
+backoffice.ship.handling = Gestion des frais
+backoffice.ship.minweight = Poids minimum
+backoffice.ship.maxweight = Poids maximum
+
+backoffice.ship.tab1 = Paramètres généraux
+backoffice.ship.tab2 = Tarifs
+backoffice.ship.tab3 = visibilité
+backoffice.ship.tab4 = pays
+backoffice.ship.title = Taux nouvelle table
+
+backoffice.ship.tab1.enablefront = Activée sur le site web front-end
+backoffice.ship.tab1.enablefront.desc = Faire de cette option de livraison disponible sur le site web front-end.
+backoffice.ship.tab1.enableadmin = Activé dans la zone d'administration
+backoffice.ship.tab1.enableadmin.desc = Faire de cette option de livraison disponible dans la zone d'administration.
+backoffice.ship.tab1.name = Nom *
+backoffice.ship.tab1.name.desc = Nom de l'option de livraison. Il sera affiché sur le site Web front-end.
+backoffice.ship.tab1.handling = Gestion des frais
+backoffice.ship.tab1.handling.desc = S'il vous plaît indiquer frais de manutention pour cette méthode de livraison. Les frais de manutention seront ajoutés à la citation d'expédition.
+backoffice.ship.tab1.minweight = Poids minimum
+backoffice.ship.tab1.minweight.desc = L'option d'expédition sera ignorée si le poids de paquet est inférieure à la valeur spécifiée. Laissez le champ vide pour annuler le contrôle du poids minimum.
+backoffice.ship.tab1.taxable = imposable
+backoffice.ship.tab1.taxable.desc = Utilisez la classe d'impôt "Livraison" pour spécifier les taux d'imposition pour différents endroits.
+backoffice.ship.tab1.desc = Description
+backoffice.ship.tab1.desc.desc = S'il est fourni, il sera affiché sur le site Web front-end.
+backoffice.ship.tab1.apicode = OBC API Code
+backoffice.ship.tab1.apicode.desc = Vous pouvez utiliser le code d'API permettant d'identifier le mode de livraison dans les appels d'API.
+backoffice.ship.tab1.maxweight = Poids maximum
+backoffice.ship.tab1.maxweight.desc = L'option d'expédition sera ignorée si le poids de paquet est plus que la valeur spécifiée. Laissez le champ vide pour annuler le contrôle du poids maximum.
+
+backoffice.ship.tab2.country = pays
+backoffice.ship.tab2.state = état
+backoffice.ship.tab2.zip = ZIP
+backoffice.ship.tab2.city = ville
+backoffice.ship.tab2.minweight = Poids min
+backoffice.ship.tab2.maxweight = Poids maximum
+backoffice.ship.tab2.minvol = Volume min
+backoffice.ship.tab2.maxvol = Volume max
+backoffice.ship.tab2.minsub = min total partiel
+backoffice.ship.tab2.maxsub = Sous-total max
+backoffice.ship.tab2.minitem = Articles min
+backoffice.ship.tab2.maxitem = Articles Max
+backoffice.ship.tab2.rate = taux
+
+backoffice.ship.tab3.head1 = Groupes de clients
+backoffice.ship.tab3.desc = S'il vous plaît sélectionner des groupes de clients les options d'expédition devraient être disponibles pour. Si aucun groupe n'est sélectionné, l'option de livraison sera disponible pour tous les groupes de clients.
+
+backoffice.ship.tab4.head1 = pays
+backoffice.ship.tab4.desc = Les pays du mode d'expédition est applicable à. Décochez tous les pays à la méthode d'expédition applicable à tous les pays.

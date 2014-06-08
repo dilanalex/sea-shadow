@@ -1,0 +1,37 @@
+@(user: securesocial.core.SocialUser, order: models.Order, shippingOpt: List[Tuple4[String,String,String,String]])(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import scala.Serializable
+@import helpers._
+
+@main("Order", user) {
+ <legend>Order Shipping Options</legend>
+ @if(!shippingOpt.isEmpty){
+ Please select shipping option.  
+  @form(action = routes.OrderCheckOut.saveshippingopt) {
+  <fieldset>
+  
+  @shippingOpt.map {var x = 0; shipopt =>   
+    <label class="radio">	
+	@if(x==0){
+	  <input type="radio" name="optship" id="optship@x" value="@shipopt._4" checked>
+	}else{
+	  <input type="radio" name="optship" id="optship@x" value="@shipopt._4">
+	}	
+	@shipopt._1 - @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request, shipopt._3.toDouble)<br/><span>@shipopt._2</span>
+	</label>
+	@{x=x+1}
+  }
+  
+  </fieldset>
+  <div class="form-actions">
+  	<input type="hidden" name="order" id="order" value="@order.id">
+	  <button type="submit" class="btn btn-success">Next >></a>	  
+  </div>  
+  }
+ }else{
+  There are no shipping options available for your location. Please contact our sales department: sales@@orangebus.com.
+ }
+
+}

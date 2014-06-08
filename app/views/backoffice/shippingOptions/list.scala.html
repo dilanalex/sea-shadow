@@ -1,0 +1,79 @@
+@(shippingTableRates: List[models.ShippingTableRate])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+
+@handleYesNo(value:Boolean)={
+	@if(value==true){Yes} else {No}
+}
+
+@cpanel({Messages("backoffice.ship.title")}, null) {
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	<h1>@{Messages("backoffice.ship.title")}</h1>
+	
+	<br/>
+	
+	<a class="btn btn-primary" id="add" href="@controllers.backoffice.routes.ShippingOptions.show(new ObjectId())">
+	  <i class="icon-plus icon-white"></i>
+	  Add
+	</a>
+	<br/>
+	<table class="table table-striped table-bordered">
+	    <thead>
+	      <tr>
+	       <th>@{Messages("backoffice.ship.name")}</th>
+	       <th>@{Messages("backoffice.ship.type")}</th>
+	       <th>@{Messages("backoffice.ship.desc")}</th>
+	       <th>@{Messages("backoffice.ship.enablestore")}</th>
+	       <th>@{Messages("backoffice.ship.enablebackofce")}</th>
+	       <th>@{Messages("backoffice.ship.taxable")}</th>
+	       <th>@{Messages("backoffice.ship.handling")}</th>
+	       <th>@{Messages("backoffice.ship.minweight")}</th>
+	       <th>@{Messages("backoffice.ship.maxweight")}</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      @shippingTableRates.map { shippingTableRate =>
+
+          <tr>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)"> @shippingTableRate.name</a>
+           	</td>
+           	<td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">Table Rate</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@shippingTableRate.description</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@handleYesNo(shippingTableRate.enableFrontFlag.getOrElse(""))</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@handleYesNo(shippingTableRate.enableAdminFlag.getOrElse(""))</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@handleYesNo(shippingTableRate.taxableFlag.getOrElse(""))</a>
+            </td>	           
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@shippingTableRate.handlingFee</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@shippingTableRate.minWeight</a>
+            </td>
+            <td>
+            	<a href="@controllers.backoffice.routes.ShippingOptions.show(shippingTableRate.id)">@shippingTableRate.maxWeight</a>
+            </td>
+          </tr>
+	        
+	      }
+	    </tbody>
+  	</table>
+	
+}

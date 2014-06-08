@@ -1,0 +1,22 @@
+@(baseBreadCrumbs: Map[String, play.api.mvc.Call], 
+    taxonomy: Taxonomy = null)
+@import helpers._
+
+<ul class="breadcrumb">
+  <li>
+    <a href="@routes.Application.index">Home</a> <span class="divider">/</span>
+  </li>
+  @baseBreadCrumbs.map { keyVal =>
+    <li>
+  	  <a href="@keyVal._2">@keyVal._1</a> <span class="divider">/</span>
+    </li>
+  }
+  @Taxonomies.breadcrumbs(taxonomy).map { term =>
+    <li>
+  	  <a href="@routes.Products.search(term.path)">@term.name</a> <span class="divider">/</span>
+    </li>
+  }
+  @if(taxonomy != null) { 
+    <li class="active">@taxonomy.name</li>
+  }
+</ul>

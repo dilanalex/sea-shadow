@@ -1,0 +1,157 @@
+@(order: models.Order, user: securesocial.core.SocialUser)(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Shopping Cart", user) {
+	<h1>@{Messages("cart.heading")}</h1>
+	
+	@if(order.lineItems.isEmpty) {
+	    <div class="alert alert-info">
+	    	@Html({Messages("cart.no.items", """<a href='""" + routes.Products.index +  	"""'>""", "</strong></a>")})
+	 	 	 
+	    </div>
+	} else {
+		<table class="table table-striped">
+			<thead>
+				<tr>
+			    	<th>@{Messages("cart.item.lbl")}</th>
+			        <th/>
+			        <th>@{Messages("cart.quantity.lbl")}</th>
+			        <th><div style="float:right">@{Messages("cart.price.lbl")}</div></th>
+			        <th><div style="float:right">@{Messages("cart.total.lbl")}</div></th>
+			        <th>@{Messages("cart.delete.lbl")}</th>
+			     </tr>
+			</thead>
+			<tbody> 
+				@order.lineItems.map { lineItem =>  
+				<tr>
+			    	<td><img class="table_thumbnail_image" src="/images/getimage?imageName=@lineItem.image&width=83&height=111"></td>
+			    	<td><a href="@routes.Products.show(lineItem.product)"><strong>@lineItem.title<strong></a></td>
+			    	<td>			    		
+			    		<form action="@routes.Cart.remove" method="POST" class="table_form">
+			    			<input type="hidden" name="productid" id="productid" value="@lineItem.product" />
+							<input type="image" src="@routes.Assets.at("images/basket/quantityDecrement.png")" border="0" alt="submit!">
+						</form>
+						<input type="text" id="quantity" class="input_small" value="@lineItem.qty" />
+						<form action="@routes.Cart.add" method="POST" class="table_form">
+							<input type="hidden" name="productid" id="productid" value="@lineItem.product" />
+							<input type="image" src="@routes.Assets.at("images/basket/quantityIncrement.png")" border="0" alt="submit!">
+						</form>						
+					</td>
+			    	<td><div style="float:right">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,lineItem.price)</div></td>
+			    	<td><div style="float:right">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,(lineItem.price*lineItem.qty))</div></td>
+			    	<td>
+			    		<form action="@routes.Cart.delete" method="POST">
+			    			<input type="hidden" name="productid" id="productid" value="@lineItem.product" />
+							<button type="submit" class="btn btn-danger">
+			  					<i class="icon-trash icon-white"></i> @{Messages("cart.delete.btn")}
+							</button>
+						</form>
+					</td>
+				</tr>
+				}				
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><div style="float:right"><h4>@{Messages("cart.total.lbl")} :</h4></div></td>
+					<td><div style="float:right"><h4>@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.subTotal.toDouble)</h4></div></td>
+					<td></td>
+				</tr>				
+			</tbody>
+		</table>
+		<hr>
+		<div>
+		* Shipping cost and taxes will be evaluated during the checkout process.
+			  <div id="accordion2" class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a href="#collapseOne" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle">
+                      Estimate shipping cost
+                    </a>
+                  </div>
+                  <div class="accordion-body collapse" id="collapseOne">
+                    <div class="accordion-inner">
+                      <div class="well">	    
+						<div style="display: inline; float: left;">
+						  <select id="countryList" name="countryList" class="span2">
+						    @for(c <- Country.countriesAct) {
+								<option value="@c.code">@c.name</option>				
+							}
+						  </select>
+						</div>
+						<div style="display: inline; float: left;">
+						   <select id="stateList" name="stateList" class="span2">
+						     <option value="*">-</option>
+						   </select>
+						</div>
+						<div style="display: inline; float: left;"><b>&nbsp;</b></div>
+						<div style="display: inline; float: left;">
+						  <a id="calculateScost" href="#" class="btn btn-mini btn-success"><i class="icon-th icon-white"></i>calculate</a>
+						</div>						
+					  </div>					  
+					  <div id="shipping_options"></div>					  
+                    </div>
+                  </div>
+                </div>                
+              </div>	    		
+		<div style="float:right">
+		<a href="@routes.Payments.paypalSetExpressCheckout"><img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;"></a>
+		or
+		<a href="@routes.OrderCheckOut.checkout" class="btn btn-success"><i class="icon-shopping-cart icon-white"></i>@{Messages("cart.checkout.btn")}</a>
+		</div>
+		</div><br/>
+	}
+	
+	<script type="text/javascript" charset="utf-8">
+	   var chgStates = function() {
+	     var cId = $('#countryList').val();     
+	     jsRoutes.controllers.backoffice.States.getCountryStateList(cId).ajax({
+	       success: function(data) {	    	  
+	       	var stateshere = eval('(' + data + ')');	        
+	       	$('#stateList').find('option').remove();
+	        var default_opt = true;
+	       	for (i=0; i<stateshere.states.length; i++){	       		
+	       	  $('#stateList').append( new Option(stateshere.states[i].name,stateshere.states[i].code) );
+	       	  default_opt = false;
+	       	}
+	       	if(default_opt)
+	       		$('#stateList').append( new Option("-","*") );
+	       },
+	       error: function() {
+	         alert("Error!");
+	       }
+	     })
+	   };
+	   $('#countryList').change(chgStates);
+	   
+	   var calShipCost = function() {
+	     var cId = $('#countryList').val();
+	     var sId = $('#stateList').val();
+	     jsRoutes.controllers.backoffice.ShippingOptions.findShipTRlist(cId,sId).ajax({
+	       success: function(data) {
+	       //alert(data);
+	       var costs = eval('(' + data + ')');
+	       $("#shipping_options").html("");
+	       var htmlcontent="<ul>";		    	   
+	       for (i=0; i<costs.sTblRate.length; i++){		       		
+	    	   htmlcontent = htmlcontent + "<li>" + costs.sTblRate[i].name +
+	    	                 " - <strong>" + costs.sTblRate[i].rate + "</strong>  " + 
+	    	   				 costs.sTblRate[i].description + "</li>"
+		   }
+	       htmlcontent = htmlcontent+"</ul>";
+	       if(htmlcontent == "<ul></ul>"){
+	    	   htmlcontent = "There are no shipping options available for your location. Please contact our sales department: sales@@orangebus.com."
+	       }
+	       $("#shipping_options").html(htmlcontent);
+	       },
+	       error: function() {
+	         alert("Error!");
+	       }
+	     })
+	   };
+	   $('#calculateScost').click(calShipCost);
+    </script>
+}

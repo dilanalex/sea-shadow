@@ -1,0 +1,46 @@
+@(loginForm: Form[models.UserX])(implicit request: RequestHeader, flash: Flash, lang: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+      
+      @if(field.hasErrors){      
+        <span class="help-inline">
+        @Messages(field.error.head.message)
+        </span>        
+      }
+    </div>
+  </div>
+}
+
+@mainX("Customer Login") {
+  
+  @if(flash.data.contains("message")){
+    	<div class="alert alert-success">@flash.get("message")</div>
+  }
+   @if(flash.data.contains("errormessage")){
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+  }
+   @loginForm.globalError.map { error =>
+		<div class='row'>
+		  <div class="alert alert-error">@error.message</div>
+		</div>
+  }
+	
+	@form(action = routes.ApplicationX.authenticate, 'class -> "form-horizontal", 'id -> "formtwo", 'name -> "formtwo") {
+	   <fieldset>
+	     <legend>@{Messages("customer.login.heading")}</legend>
+	     <h4>@{Messages("customer.login.label")}:</h4>	       
+	     @input(loginForm("email"), {Messages("customer.email.lbl")},  'email)
+	     @input(loginForm("password"), {Messages("customer.pwd.lbl")}, 'password)      
+	   </fieldset>
+	   <input type="submit" name="login" id="login" class="btn btn-primary" value="@Messages("customer.login.btn.lbl")"/>
+	 }
+   
+}(request,lang)

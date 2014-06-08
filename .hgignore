@@ -1,0 +1,22 @@
+syntax:glob
+.metadata*
+
+syntax:regexp
+^target.*$
+^[^/]*/target.*$
+^[^/]*/[^/]*/target.*$
+^bin.*$
+^[^/]*/bin.*$
+^[^/]*/[^/]*/bin.*$
+
+syntax: glob
+target/**
+.target/**
+logs/**
+public/**
+.git/**
+.cache
+.classpath
+.gitignore
+.project
+README

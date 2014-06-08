@@ -1,0 +1,77 @@
+@(products: Iterator[List[models.Product]])(implicit request: RequestHeader, flash: Flash)
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+
+@displayProduct(product: models.Product) = {
+
+<tr>
+   	<!--td><input type="checkbox" name="option1" value="xxx"></td-->
+   	<td><img src="/images/getimage?imageName=@product.image.head&width=83&height=111" /><input type="hidden" name="productid" id="productid" value="@product.id" /></td>
+   	<td><a href="@controllers.backoffice.routes.Product.edit(product.id)"><strong>@product.title</strong></a><div>@product.description</div></td>
+   	<td>@CurrencyConvertor.getBaseCurrencySymbol(request) @product.price</td>
+   	<td>
+   	  <form action="@controllers.backoffice.routes.Product.edit(product.id)" method="GET">
+   	    <!-- input type="hidden" id="productid" name="productid" value="@product.id"--> 	    
+	    <button type="submit" class="btn btn-primary">
+		  <i class="icon-edit icon-white"></i> Edit
+	    </button>
+	  </form>
+	</td>
+   	<td>   	  
+	    <a class="btn btn-danger" href="#@product.id" data-toggle="modal"><i class="icon-trash icon-white"></i> Delete</a>
+	    <div class="modal hide" id="@product.id">	       
+    		<div class="modal-body"><p>Do you really want to delete this product?</p></div>
+    	    <div class="modal-footer">
+    			<a href="#" class="btn" data-dismiss="modal">No</a>
+    			<a href="@controllers.backoffice.routes.Product.delete(product.id)" class="btn btn-primary">Yes</a>
+    	    </div>
+    	</div>	  
+	</td>
+</tr>
+  
+}
+
+@cpanel("Product List" , null) {
+  @if(flash.data.contains("message")){	
+	<div class="alert alert-success">@flash.get("message")</div>		  
+  } 	
+  @if(flash.data.contains("errormessage")){ 	
+    <div class="alert alert-error">@flash.get("errormessage")</div>	
+  } 
+	
+  @if(products.isEmpty) {	
+	<h1>No Products found!!!</h1>
+	<form action="@controllers.backoffice.routes.Product.edit(new ObjectId())" method="GET">   	    	    
+	                <button type="submit" class="btn btn-success">
+		              <i class="icon-ok icon-white"></i> Create Product
+	                </button>
+	              </form>
+  } else {
+  	<table class="table table-striped">
+		<thead>
+			<tr>
+		    	<!-- th>Ln</th-->
+		        <th>Image</th>
+		        <th>Product Name</th>
+		        <th>Price</th>
+		        <th colspan="2">		        
+		          <form action="@controllers.backoffice.routes.Product.edit(new ObjectId())" method="GET">   	    	    
+	                <button type="submit" class="btn btn-success">
+		              <i class="icon-ok icon-white"></i> Create Product
+	                </button>
+	              </form>
+		        </th>
+		     </tr>
+		</thead>
+		<tbody>
+			@products.map { row =>				 
+			 @row.map { product => @displayProduct(product)}
+			}				
+		</tbody>
+	</table>	
+  }
+    
+}

@@ -1,0 +1,20 @@
+@(page: models.CMSPage)(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@main("Currencies", null) {
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	}
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	<h2>@page.title</h2>
+	<br>
+	
+	<body>
+		@Html(page.content)
+	</body>
+
+}

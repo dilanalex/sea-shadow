@@ -1,0 +1,55 @@
+@(user: securesocial.core.SocialUser, products: List[models.Product],
+    taxonomy: Taxonomy = null,
+    baseBreadCrumbs: Map[String, play.api.mvc.Call] =
+      Map("Products" -> routes.Products.index))(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Product List", user) { 
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	}
+  <div class="container-fluid">
+	<div class="row-fluid">		
+	  <div class="span3">
+	    @shared._taxonomies(taxonomy)
+	  </div>
+ 	  <div class="span9">
+	    @if(products.isEmpty) {
+	    <div class="span12">
+		    <form action="@controllers.routes.Products.searchProduct("")" method="GET" class="well form-search">
+		    	<input name="searchtext" id="searchtext" type="text" class="input-medium search-query">
+		    	<button type="submit " class="btn">@{Messages("product.search.btn")}</button>
+		    </form>
+		</div>
+	  	  @shared._breadcrumb(baseBreadCrumbs, taxonomy)
+	  	  <h1>@{Messages("product.no.products")}</h1>
+	  	  	
+	  	} else {
+	  	<div class="span12">
+		    <form action="@controllers.routes.Products.searchProduct("")" method="GET" class="well form-search">
+		    	<input name="searchtext" id="searchtext" type="text" class="input-medium search-query">
+		    	<button type="submit " class="btn">@{Messages("product.search.btn")}</button>
+		    </form>
+		</div>
+	  	  @shared._breadcrumb(baseBreadCrumbs, taxonomy)
+	  	  @products.grouped(4).map { row =>					      
+	  	  	<div class="row-fluid">	
+			  @row.map { product => 
+			  	<div class="span3 product">
+			      <a href="@routes.Products.show(product.id)">
+			        <img src="/images/getimage?imageName=@product.image.head&width=146&height=195" />
+			        <h3 class="title">@product.title</h3>
+			        <div class="price">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,product.price)</div>
+			      </a>
+			    </div>	
+			  }			      	 
+		    </div>
+	      }
+	  	}
+	  </div>
+	</div>
+  </div>
+}

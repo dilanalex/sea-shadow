@@ -1,0 +1,104 @@
+@(currentPage: helpers.Page[(models.Country)], currentOrderBy: Int, currentFilter: String)(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+    controllers.backoffice.routes.Countries.list(newPage, newOrderBy.map { orderBy =>
+        if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+    }.getOrElse(currentOrderBy), currentFilter)
+}
+
+@header(orderBy: Int, title: String) = {
+    <th class="">
+        <a href="@link(0, Some(orderBy))">@title</a>
+    </th>
+}
+
+@cpanel("Countries", null) {
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	<h1>@{Messages("backoffice.country.head1")}</h1>
+	<br>
+	<div id="actions">
+	  @helper.form(action=controllers.backoffice.routes.Countries.list()) {
+	    <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="@{Messages("backoffice.country.search.lbl")}">
+	    <input type="submit" id="searchsubmit" value="@{Messages("backoffice.country.search.btn")}" class="btn btn-primary">
+	  }
+	  
+	 <a class="btn btn-success" id="add" href="@controllers.backoffice.routes.Countries.show(new ObjectId(),1)">
+	  	<i class="icon-plus icon-white"></i>
+	  	@{Messages("backoffice.country.add.btn")}
+	  </a>
+  </div>
+  <br>
+ 	@Option(currentPage.items).filterNot(_.isEmpty).map { countries =>
+ 		<table class="table table-striped table-bordered">
+	    <thead>
+	      <tr>
+	        @header(2, {Messages("backoffice.country.name.lbl")})
+	        @header(3, {Messages("backoffice.country.code.lbl")})
+	        @header(4, {Messages("backoffice.country.code3.lbl")})
+	        @header(5, {Messages("backoffice.country.enable.lbl")})
+	      </tr>
+	    </thead>
+	    <tbody>
+	      @countries.map { 
+	        case (country) => {
+	          <tr>
+	            <td>
+	            	<a href="@controllers.backoffice.routes.Countries.show(country.id,1)">@country.name</a>
+	           	</td>
+	            <td>
+	            	@country.code
+	            </td>
+	            <td>
+	            	@country.code
+	            </td>
+	            <td>
+	            	@country.enabled
+	            </td>
+	          </tr>
+	        }
+	      }
+	    </tbody>
+  	</table>
+  	
+		<div id="pagination" class="pagination">
+	    <ul>
+	      @currentPage.prev.map { page =>
+	        <li class="prev">
+	            <a href="@link(page)">&larr; @{Messages("common.paging.pre")}</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="prev disabled">
+	            <a>&larr; @{Messages("common.paging.pre")}</a>
+	        </li>
+	      }
+	      <li class="current">
+	      
+	      	<a>@Html({Messages("common.paging.desc", (currentPage.offset + 1), (currentPage.offset + countries.size), currentPage.total)})</a>
+	      </li>
+	      @currentPage.next.map { page =>
+	        <li class="next">
+	            <a href="@link(page)">@{Messages("common.paging.next")} &rarr;</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="next disabled">
+	            <a>@{Messages("common.paging.next")} &rarr;</a>
+	        </li>
+	      }
+	    </ul>
+		</div>
+  	
+ 	}.getOrElse {
+	  <div class="well">
+	      <em>@{Messages("common.nothing.display")}</em>
+	  </div>
+	}
+}

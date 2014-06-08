@@ -1,0 +1,159 @@
+@(filterName:String,popUpDataMap:Seq[(String,String)])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+
+
+
+<script language="JavaScript">
+   
+   var filterName="@filterName";
+   
+   var selectedFilterKeysArray = new Array();
+ 
+   if(document.getElementById("selectedFilterList_@filterName").value !="" ){
+	   selectedFilterKeysArray = document.getElementById("selectedFilterList_@filterName").value.split(",");
+   }  
+ 
+   function setSelectedButton(id,val){  
+	   
+	   if(selectedFilterKeysArray){
+		   
+		   if (selectedFilterKeysArray.indexOf(val)>-1){	
+			toggleButton(id);
+		   }
+	   }
+   }
+   
+   //Add and remove keys
+   function addRemove(val){	  
+	  
+	   var classname = document.getElementById("btn_"+val).className;
+	 
+		if (classname=="btn btn-primary"){
+			selectedFilterKeysArray.push(val);
+		}
+		else{
+			selectedFilterKeysArray.splice(selectedFilterKeysArray.indexOf(val),1);
+		}
+		toggleButton("btn_"+val);
+		
+	}
+   
+   // change button appearance
+   function toggleButton(id){
+	   	
+	    var classname = document.getElementById(id).className;
+		
+	    if(classname == "btn btn-primary"){
+			document.getElementById(id).className = "btn btn-success";
+			document.getElementById(id).innerHTML = "√";
+			
+		}else{
+			document.getElementById(id).className = "btn btn-primary";
+			document.getElementById(id).innerHTML = "+";
+		}
+   }
+   
+   //copy new filter keys to the filter element and submit
+   function saveFilter(){ 
+	   
+	  document.getElementById("selectedFilterList_@filterName").value = selectedFilterKeysArray;
+	  
+	  showFilterValuesList();
+	 
+	  submitForm();
+	 
+   }
+    
+  
+   function showFilterValuesList(){
+	   var filterValues= ""; 
+	   if(selectedFilterKeysArray){  
+		for(var i=0;i<selectedFilterKeysArray.length;i++){
+	    	filterValues +=document.getElementById("val_"+selectedFilterKeysArray[i]).innerHTML +", ";
+	    	}
+	    }
+	   document.getElementById("spanSelectedFilterDisplayList_@filterName").innerHTML =filterValues;
+	   document.getElementById("selectedFilterDisplayList_@filterName").value =filterValues;
+	 							
+	   
+	   
+   }
+   
+
+   //function to search from value list
+   $(document).ready(function () {
+   	$('#search').keyup(function(event) {
+   		var search_text = $('#search').val();
+   		var rg = new RegExp(search_text,'i');
+   		$('#values_list .values-list .value').each(function(){
+    			if($.trim($(this).html()).search(rg) == -1) {
+   				$(this).css('display', 'none');
+   			}	
+   			else {
+   				$(this).css('display', '');
+   			}
+   		});
+   	});
+   });
+
+   $('#search_clear').click(function() {
+   	$('#search').val('');	
+   	
+   	$('#values_list .values-list .value').each(function(){
+   		$(this).css('display', '');
+   	});
+   });
+
+</script>
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<br>
+		<h4> Select values for @filterName filter</h4>
+		<br>
+        Search <input name="search" type="text"  id="search" autocomplete="off">
+        <a href="javascript:void(0);" id="search_clear">Show all</a>
+        
+     
+	</div>
+	
+	
+	<div class="modal-body">
+		
+		<table id="values_list" name="values_list"class="table table-striped">
+			<thead>				
+				<th>@filterName</th>
+				<th>Add</th>
+			</thead>
+			<tbody  class="values-list">
+				@if(!popUpDataMap.isEmpty){
+					
+					@popUpDataMap.map{ popUpData =>
+					
+					<tr class="value" >
+						<td> <span id="val_@popUpData._1" name="val_@popUpData._1">@popUpData._2</span></td>
+						<td>
+							<button class="btn btn-primary" id="btn_@popUpData._1" name="btn_@popUpData._1"
+							  onclick="addRemove('@popUpData._1')">+</button>
+						</td>
+					</tr>
+					<script language="JavaScript"> setSelectedButton("btn_@popUpData._1","@popUpData._1");</script>
+					}
+				}
+				
+			</tbody>	
+		</table>
+		
+		
+		
+			
+	</div>
+	
+	
+	<div class="modal-footer" style="width: 530px;">
+		<a href="#" class="btn btn-success" onclick="saveFilter();" data-dismiss="modal" >Save</a>
+		<a href="#" class="btn" data-dismiss="modal">Close</a>  
+	</div>

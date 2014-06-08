@@ -1,0 +1,133 @@
+@(user: securesocial.core.SocialUser, order: models.Order)(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Order", user) {
+
+ <legend>Order Review</legend>
+	<table class="table">
+	  <thead>
+	    <tr>
+	      <th>Cart Items</th>
+	      <th class="right">Quantity</th>
+	      <th class="right">Price</th>
+	      <th class="right">Discount</th>
+	      <th class="right">Total tax</th>
+	      <th class="right last">Total Price</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+  		@order.lineItems.map { lineItem =>
+     	<tr>
+	      <td>
+	          <strong>@lineItem.title</strong>
+	      </td>
+	      <td class="right">@lineItem.qty</td>
+	      <td class="right">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,lineItem.price)</td>
+	      <td class="right">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,0)</td>
+	      <th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,lineItem.tax)</th>
+	      <th class="right last">
+	          @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,((lineItem.price*lineItem.qty) + lineItem.tax))
+	      </th>
+    	</tr>
+	    }
+	  </tbody>
+	</table>
+	
+	
+	<table>
+		<tr>
+			<td width="850px;">&nbsp;</td>
+			<td>
+				<table class="table">
+				  <tbody>
+					<tr>
+						<td>Subtotal: </td>
+						<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.subTotal)</th>
+					</tr>
+					<tr>
+						<td>Discount: </td>
+						<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,0)</th>
+					</tr>
+					<tr>
+						<td>Sales tax (TAX): </td>
+				    	<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.productTax)</th>
+				    </tr>
+				    <tr>
+						<td>Shipping and handling: </td>
+						<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.shipFee)</th>
+				  	</tr>
+					<tr>
+						<td>Shipping tax (TAX): </td>
+						<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.shipTax)</th>
+					</tr>
+				    <tr>
+						<td></td>
+						<td class="last"></td>
+					</tr>
+				    <tr>
+						<td>Total :</td>
+						<th class="last">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,(order.subTotal + order.shipFee + order.shipTax + order.productTax)) </td>
+					</tr>
+				</tbody>
+			  </table>
+		  </td>
+	  </tr>	
+  </table>
+   
+  @form(action = routes.OrderCheckOut.confirmation) {  
+  <div class="form-actions" align="right">  	
+  	<input type="hidden" name="order" id="order" value="@order.id">
+  	  
+  	   <button type="submit" class="btn btn-success">Place Order and Pay</a>  	  
+  </div>  
+  }
+  
+  @*@if(order.paymentGatewayMethod.getOrElse("").toString().equals("PPExpressCheckout")){
+    @form(action = routes.Payments.paypalDoExpressCheckoutPayment) {  
+	  <div class="form-actions" align="right">  	
+	  	<input type="hidden" name="order" id="order" value="@order.id">
+	  	  
+	  	   <button type="submit" class="btn btn-success">Place Order and Express Payment</button>  	  
+	  </div>  
+    }
+  }else{
+    <form action="@PaymentCredentials.ppProPaymentUrl"
+	method="post">
+	
+	<input type="hidden" name="cmd" value="_hosted-payment">
+	<input type="hidden" name="business" value="@PaymentCredentials.ppProBusiness">	
+	<input type="hidden" name="paymentaction" value="sale">	
+	
+	<input type="hidden" name="cbt"
+	value="To continue with the order please click here">	
+	<input type="hidden" name="return"
+	value="@routes.OrderCheckOut.paymentValidator.absoluteURL()">
+	<input type="hidden" name="cancel_return"
+	value="@routes.Cart.show.absoluteURL()">
+	
+	<input type="hidden" name="invoice" value="@order.id"/> 	 
+	<input type="hidden" name="currency_code" value="@CurrencyConvertor.getCode(request)"/>
+	<input type="hidden" name="subtotal" value="@CurrencyConvertor.getRate(request,order.subTotal)">
+	<input type="hidden" name="shipping" value="@CurrencyConvertor.getRate(request,(order.shipFee + order.shipTax))">
+	
+	
+	<input type="hidden" name="first_name" value="@order.shipAddresses.get.firstName"/>	
+	<input type="hidden" name="last_name" value="@order.shipAddresses.get.lastName"/>	
+	
+	<input type="hidden" name="buyer_email" value="@order.userEmail"/>
+	
+	
+	<div class="form-actions" align="right">  	
+  	<input type="hidden" name="order" id="order" value="@order.id">
+  	  
+  	   <button type="submit" class="btn btn-success">Pay with PayPal</button>  	  
+ 	 </div>
+	
+  </form> 
+ } *@
+ 
+
+}

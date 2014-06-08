@@ -1,0 +1,198 @@
+@(profileForm: Form[models.User], user: securesocial.core.SocialUser)(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@select(field: Field, label: String) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+       <select id="@field.id" name="@field.name">       
+       	<option class="blank" value="" >@{Messages("customer.profile.acc.sel.country")}</option>      	
+      		
+      		@for(s <- Countries.list) {      	
+      			@if(field.value.getOrElse("").equalsIgnoreCase(s)){      	   	
+      				<option value="@s" selected="selected">@s</option>
+      			}else{      
+      				<option value="@s">@s</option>
+      			}      	
+			}   
+			   	
+       </select>             
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@inputReadOnly(field: Field, label: String, fieldType: Symbol = 'text) = {
+ 
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input readonly="readonly" type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@inputError(field: Field) = {  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }      
+    </div>
+  </div>  
+}
+
+@main("Account Details", user ) {
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	}
+ 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+	
+   @profileForm.globalError.map { error =>        
+        <div class='row'>
+          <div class="alert alert-error">@error.message</div>
+        </div>        
+   }
+   
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs">
+		  <li class="active"><a data-toggle="tab" href="#lA">@{Messages("customer.profile.acc.lbl")}</a></li>
+		  <li ><a data-toggle="tab" href="#lB">@{Messages("customer.profile.acc.delivery.adr.lbl")}</a></li>
+		  <li><a data-toggle="tab" href="#lC">@{Messages("customer.profile.acc.bill.adr.lbl")}</a></li>
+		</ul>
+	
+    @form(action = routes.Profile.updateUsers, 'class -> "form-horizontal", 'id -> "formtwo", 'name -> "formtwo") {
+	   
+	    <div class="tab-content">
+	      <div id="lA" class="tab-pane active">
+	        <p>           
+	         <fieldset>	         
+				@input(profileForm("socialUser.displayName"), {Messages("customer.profile.acc.fullname")}, 'text) 
+				@inputReadOnly(profileForm("socialUser.email"), {Messages("customer.profile.acc.email")}, 'email)
+				<hr>
+				@input(profileForm("socialUser.passwordInfo.password.old"), {Messages("customer.profile.acc.old.pwd")}, 'password)				
+				@input(profileForm("socialUser.passwordInfo.password.main"), {Messages("customer.profile.acc.new.pwd")}, 'password) 
+				@input(profileForm("socialUser.passwordInfo.password.confirm"), {Messages("customer.profile.acc.new.pwd.confirm")}, 'password)
+	       		@inputError(profileForm("socialUser.passwordInfo.password"))
+	       		<input  type="hidden" value="@profileForm("id").value" id="id"  name="id" />
+	       		<input  type="hidden" value="@profileForm("social_id").value" id="social_id"  name="social_id" />
+	       		<input  type="hidden" value="@profileForm("socialUser.idSS.id").value" id="socialUser.idSS.id"  name="socialUser.idSS.id" />
+	       		<input  type="hidden" value="@profileForm("socialUser.idSS.providerId").value" id="socialUser.idSS.providerId"  name="socialUser.idSS.providerId" />
+	       		<input  type="hidden" value="@profileForm("socialUser.authMethod.method").value" id="socialUser.authMethod.method"  name="socialUser.authMethod.method" />	       		
+	       		<input  type="hidden" value="@profileForm("socialUser.isEmailVerified").value" id="socialUser.isEmailVerified"  name="socialUser.isEmailVerified" />	       		
+	       		<input  type="hidden" value="@profileForm("socialUser.avatarUrl").value" id="socialUser.avatarUrl"  name="socialUser.avatarUrl" />
+	       		
+	       		
+	         </fieldset>         
+	        </p>
+	      </div>
+	      <div id="lB" class="tab-pane ">
+	        <p>
+	         <fieldset>  
+	         	@input(profileForm("profile.activeDeliveryAddress.firstName"), {Messages("customer.profile.acc.fname")}, 'text)
+				@input(profileForm("profile.activeDeliveryAddress.lastName"), {Messages("customer.profile.acc.sname")}, 'text) 
+				@input(profileForm("profile.activeDeliveryAddress.addLine1"), {Messages("customer.profile.acc.add1")}, 'text)
+				@input(profileForm("profile.activeDeliveryAddress.addLine2"), {Messages("customer.profile.acc.add2")}, 'text) 
+				@input(profileForm("profile.activeDeliveryAddress.city"), {Messages("customer.profile.acc.city")}, 'text)
+				@input(profileForm("profile.activeDeliveryAddress.postCode"), {Messages("customer.profile.acc.pcode")}, 'text)                          
+				@select(profileForm("profile.activeDeliveryAddress.country"), {Messages("customer.profile.acc.country")}) 
+				
+	        
+	         </fieldset>
+	        </p>
+	      </div>
+	      <div id="lC" class="tab-pane">
+	        <p>
+	         <fieldset>
+	            <label class="checkbox">
+	    			<input type="checkbox" value="Y" name="copyDelAddr" id="copyDelAddr" onchange="copyDeliveryAddr();">
+	   				@{Messages("customer.profile.acc.check.lbl")}
+	  			</label> 
+	       		@input(profileForm("profile.activeBillingAddress.addLine1"), {Messages("customer.profile.acc.add1")}, 'text)
+				@input(profileForm("profile.activeBillingAddress.addLine2"), {Messages("customer.profile.acc.add2")}, 'text) 
+				@input(profileForm("profile.activeBillingAddress.city"), {Messages("customer.profile.acc.city")}, 'text)
+				@input(profileForm("profile.activeBillingAddress.postCode"), {Messages("customer.profile.acc.pcode")}, 'text) 				            
+				@select(profileForm("profile.activeBillingAddress.country"), {Messages("customer.profile.acc.country")})
+				
+	
+			</fieldset>
+	        </p>
+	      </div>
+	    </div>
+	    <input type="submit" name="save" id="save" class="btn btn-primary" value="@Messages("customer.profile.acc.save.all")"/>
+	
+	}
+	
+	</div>      
+      <script type="text/javascript" charset="utf-8">
+	 
+		function copyDeliveryAddr(){			
+			if	(document.getElementById("copyDelAddr").checked) {	      
+				document.getElementById("profile_activeBillingAddress_addLine1").value=document.getElementById("profile_activeDeliveryAddress_addLine1").value;
+				document.getElementById("profile_activeBillingAddress_addLine2").value=document.getElementById("profile_activeDeliveryAddress_addLine2").value;
+				document.getElementById("profile_activeBillingAddress_city").value=document.getElementById("profile_activeDeliveryAddress_city").value;
+				document.getElementById("profile_activeBillingAddress_postCode").value=document.getElementById("profile_activeDeliveryAddress_postCode").value;
+				index=selectOption();	       
+				document.getElementById("profile_activeBillingAddress_country").options[index].selected=true;	       
+			} else {
+				document.getElementById("profile_activeBillingAddress_addLine1").value="";
+				document.getElementById("profile_activeBillingAddress_addLine2").value="";
+				document.getElementById("profile_activeBillingAddress_city").value="";
+				document.getElementById("profile_activeBillingAddress_postCode").value="";
+				document.getElementById("profile_activeBillingAddress_country").options[0].selected=true;
+			}			
+   		}
+		
+		function selectOption() {
+			var selObj = document.getElementById('profile_activeDeliveryAddress_country');
+			var selIndex = selObj.selectedIndex;
+			return selIndex;		 	  
+		}
+	
+	</script>
+	
+}

@@ -1,0 +1,18 @@
+@(message: String,user:UserX)(implicit request: RequestHeader, l: Lang)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@mainX(message,user) {
+  
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="hero-unit">
+        <h1>@message</h1>
+        <p>@{Messages("sprint")}</p>
+        <p><a href="@routes.Products.index" class="btn btn-primary btn-large">@{Messages("home.browse.btn")} »</a></p>
+      </div>
+    </div>
+  </div>
+
+}(request,l)

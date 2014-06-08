@@ -1,0 +1,278 @@
+@(productForm: Form[models.Product], imageList:List[String] = List("no_Image.jpg"), relatedProducts: List[models.Product] = List())(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@inputTxtArea(field: Field, label: String) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <textarea rows="3" id="@field.id"  name="@field.name" class="input-xlarge">@field.value</textarea>     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@select(field: Field, label: String) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+       <select id="@field.id" name="@field.name">       
+         <option class="blank" value="" >
+           @{Messages("-- Choose a tax class --")}
+         </option>      	
+	   		 @for(s <- Tax.list) {
+				   @if(field.value.getOrElse("").equalsIgnoreCase(s.id.toString)){ 
+					   <option value="@s.id" selected="selected">@s.name</option>
+					 }else{
+					   <option value="@s.id">@s.name</option>
+					 }      	
+				 } 
+       </select>             
+         @if(field.hasErrors){
+           <span class="help-inline">@Messages(field.error.head.message)</span>
+         }
+    </div>
+  </div>
+  
+}
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@cpanel("Product Detail", null) {
+
+	
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+   @productForm.globalError.map { error =>        
+        <div class='row'>
+          <div class="alert alert-error">@error.message</div>
+        </div>        
+   }
+     
+  
+   		
+   <div class="row-fluid">
+   <input type="hidden" name="relprodsize" id="relprodsize" value="@relatedProducts.size">
+  	<div class="span10">
+  	<strong>  	  	
+  	@if(productForm("title").value.get.toString()==""){
+  	  New Product Creation
+  	}else{
+  	  @productForm("title").value
+  	}
+  	</strong>
+  	@form(action = controllers.backoffice.routes.Product.save, 'enctype -> "multipart/form-data" , 'class -> "form-horizontal", 'id -> "productForm", 'name -> "productForm") {
+  	  	<div class="tabbable tabs-top">
+   			<ul class="nav nav-tabs">
+	     		<li class="active"><a data-toggle="tab" href="#product">Product</a></li>
+	     		<li ><a data-toggle="tab" href="#related">Related</a></li>
+    		</ul>
+    		<div class="tab-content">
+    		<div id="product" class="tab-pane active">
+  		<div class="row-fluid">
+    		<div class="span5">    		
+			  <table class="table table-striped"> 
+	    		<tbody>				
+			   @imageList.map{ var x = 0; image=>
+				<tr>
+			    	<td><img alt="@image" src="/images/getimage?imageName=@image&width=83&height=111"></td>
+			    	@if(!image.equals("no_Image.jpg")){
+			    	<td>
+			    	<form id="replaceImage@x" name="replaceImage" action="/backoffice/replaceImage" method="POST" enctype="multipart/form-data">
+			    	<input type="hidden" value="@productForm("productid").value" id="productid"  name="productid" />
+			    	<input type="hidden" value="@image" id="imgName"  name="imgName" />
+			    	<input type="hidden" value="@x" id="imgId"  name="imgId" />
+			    		<input id="picture@x" name="picture@x" class="input-file" type="file">
+			    		<button type="submit" class=" btn btn-primary">
+			  			  <i class="icon-picture icon-white"></i> Replace
+						</button>
+					</form>
+			    	</td>
+			    	<td>			    	
+			    	<form id="deleteImage@x" name="deleteImage" action="/backoffice/deleteImage" method="POST">
+			    	  <input type="hidden" value="@productForm("productid").value" id="productid"  name="productid" />
+			    	  <input type="hidden" value="@image" id="imgName"  name="imgName" />			    	  						
+					  <a class="btn btn-danger" href="#@productForm("productid").value@x" data-toggle="modal"><i class="icon-trash icon-white"></i></a>
+	    			  <div class="modal hide" id="@productForm("productid").value@x" >	       
+    				    <div class="modal-body"><p>Do you really want to delete this image?</p></div>
+			   	        <div class="modal-footer">
+			   			  <a href="#" class="btn" data-dismiss="modal">No</a>
+			   			  <a href="#" onclick="document.forms['deleteImage@x'].submit();return false;" class="btn btn-primary">Yes</a>
+			   	        </div>
+					  </div>	
+    				</form>
+					}
+					</td>
+			    </tr>		   		
+	 			@{x=x+1}
+			   }				
+				</tbody>
+			  </table>		  	    	 
+    		</div>
+    		<div class="span1"></div>    		
+    		
+   			
+    		  
+	   			<div class="span4">
+	   			@imageList.map{ var x = 0; image=>				   
+			   	  <input type="hidden"  id="image[@x]"  name="image[@x]" value="@image" />
+		 		    @{x=x+1}
+				  }   
+				  
+				<fieldset>			
+				    @input(productForm("productid"), "", 'hidden)    
+				    @input(productForm("sku"), "SKU", 'text)
+				    @input(productForm("title"), "Product Name", 'text)
+				    @input(productForm("price"), "Price", 'text)
+				    @inputTxtArea(productForm("description"), "Description")
+				    @select(productForm("taxClassId"), "Tax Class")
+				    <div class="control-group">
+	    			  <label class="control-label" for="picture">Upload Image(s)</label>
+	    			  <div class="controls">
+	    				<!-- input id="picture" name="picture" class="input-file" type="file"--> 
+	    				<input id="picture" type="file" multiple="" data-url="/public/images/products/" name="picture">     
+	    			  </div>
+	  				</div>
+	  				 @inputTxtArea(productForm("metaDescription"), "Meta Description")
+	  				 @inputTxtArea(productForm("metaKeywords"), "Meta Keywords") 
+				</fieldset>   
+				    <a href="/backoffice/products">
+				    	<button type="button" class="btn btn-primary">
+						  <i class="icon-edit"></i> Edit More Products
+						</button>
+					</a>
+				    <button type="submit" class="btn btn-primary">
+						  <i class="icon-pencil"></i> Save
+					</button>		
+	    		</div>
+	    		</div>
+	    		</div>
+	    	  <div id="related" class="tab-pane">
+						
+						<div id="example" class="modal hide fade modal-admin" style="display: none;" data-color="grey" >  
+							<div class="modal-header">  
+								<a class="close" data-dismiss="modal">X</a>  
+								<h3>Select Related Products</h3>  
+							</div> 
+							
+							<div class="modal-body" id="model-body">  
+								<!-- This is the model body : Product Listing goes here  -->
+								
+							</div>  
+							<div class="modal-footer">
+								<a href="#" class="btn btn-success">Call to action</a>  
+								<a href="#" class="btn" data-dismiss="modal">Close</a>
+							</div>  
+						</div>  
+						
+						<!-- Following button click will load the product list pop up @controllers.backoffice.routes.CMSPages.show(new ObjectId()) -->
+						
+						<a data-toggle="modal" data-target="#example" href="@controllers.backoffice.routes.Product.listproducts()"  role="button" class="btn btn-success">Select Related Products</a>
+						<table class="table table-striped">
+							<tr>
+								<th width="50%">Name</th>
+								<th>Sku</th>
+								<th>Price</th>
+							</tr>
+						 	
+						</table>
+						<table class="table table-striped" id="relprodlist">
+						@if(!relatedProducts.isEmpty) {	
+					    @relatedProducts.map {var x = 0; row =>
+						    <tr id="@row.sku">
+						    	<td width="50%">@row.title</td>
+						    	<td width="22%">@row.sku</td>
+						    	<td>@row.price</td>
+						    	<td><input type="button" class="btn btn-danger" value="Remove" onclick="removethis('@row.sku')" /></td>
+						    	<input type="hidden" value="@row.id" name="relatedProducts[@x]" id="relatedProducts[@x]" />
+						    </tr>
+						    @{x=x+1}
+							}	
+						}else{
+						}
+						</table>
+						<button type="submit" class="btn btn-primary">
+						  <i class="icon-pencil"></i> Save All
+					</button>	
+	    	  </div>
+    		</div>
+    		}    	  
+    	</div>
+    </div>     
+   </div>
+      
+   <script type="text/javascript">
+	 $('.modal[data-color]').on('show hidden', function () {
+	   $('body').toggleClass('modal-color-'+ $(this).data('color'));
+	 });
+	 $("a[data-toggle=modal]").click(function (e) {
+	  lv_target = $(this).attr('data-target')
+	  lv_url = $(this).attr('href')
+	  $(lv_target).load(lv_url)}
+	 )
+	 function removethis(obj){
+		 $("#" + obj).remove();
+   }
+   $('#example').on('shown', function () {
+	   disableChecked();
+   })
+   function disableChecked(){
+	   $('#relprodlist tr').each(function () {
+		   var rowid = this.id;
+		   $('#relpopuptable tbody tr  input:checkbox').each(function() {
+			    if ($(this).val() == rowid) {
+			        this.disabled = true;
+			        //this.checked = true;
+			    }
+			});
+	    });
+   }
+   </script>
+}

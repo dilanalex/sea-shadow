@@ -1,0 +1,272 @@
+sprint = Sprint 3 : Afternoon Sunrise
+home = Home
+products = Products
+cart = Cart
+home.big.label = iCommerce. It is not big, but it is clever
+home.new.customer = New Customer? Start here
+home.have.account = Have an account? Sign in
+home.browse.btn = Browse our shop
+
+home.main.profile.lbl = Profile
+home.main.orders.lbl = Orders
+home.main.signout.lbl = Sign Out
+
+common.name = Name
+common.shipping.adr = Shipping Address
+common.billing.adr = Billing Address
+common.cart.details = Order details
+common.sales.tax = Sales Tax(Tax)
+common.shippingHandling.fee = Shipping & Handling Fee
+common.shipping.tax = Shipping Tax(Tax)
+common.grand.total = Total
+common.no.search.provider = No Search Provider is available at the moment !
+
+common.nothing.display = Nothing to display
+common.yes = Yes
+common.no = No
+common.back = Back
+common.save = Save
+common.add = Add
+common.required = Required
+
+common.paging.pre = Previous
+common.paging.next = Next
+common.paging.desc = Displaying {0} to {1} of {2}
+
+product.no.products = These are not the products you are looking for!
+product.search.btn = Search Products
+product.add.basket.btn = Add to your basket
+product.related.products = Related Products
+product.search.no = Product you searched for is not available!
+product.empty.search = You Searched for nothing, below is the all available  Products !
+
+cart.heading = Shopping Cart
+cart.no.items = There are no items in the cart. Please browse our {0} products. {1}
+cart.item.lbl = Item
+cart.quantity.lbl = Quantity
+cart.price.lbl = Price
+cart.totaltax.lbl = Total Tax
+cart.total.lbl = Total
+cart.delete.lbl = Delete
+cart.delete.btn = Delete
+cart.checkout.btn = Checkout
+
+cart.checkout.heading = SECURE CHECKOUT
+cart.checkout.subheading = YOUR DELIVERY DETAILS
+cart.checkout.fname.lbl = First Name
+cart.checkout.sname.lbl = Surname
+cart.checkout.adr1.lbl = Address Line 1
+cart.checkout.adr2.lbl = Address Line 2
+cart.checkout.city.lbl = City
+cart.checkout.pcode.lbl = Post Code
+cart.checkout.country.lbl = Country
+cart.checkout.subheading2 = YOUR BILLING DETAILS
+cart.checkout.subheading3 = My delivery and billing addresses are the same.
+cart.checkout.complete.btn = COMPLETE PURCHASE
+cart.checkout.complete.sel.country = --- Choose a country ---
+
+order.thankyou = Thank You
+order.ref.lbl = Your Order Ref
+order.cust.detail.lbl = Customer Details:
+
+order.history.heading = Order History
+order.history.empty.msg = You have not bought anything yet {0} Go buy some stuff {1}
+order.history.date = Date
+order.history.orderid = Order Id
+order.history.total = Total
+
+customer.heading = New Customers
+customer.register.here = Register here
+customer.email.lbl = E-mail
+customer.pwd.lbl = Password
+customer.pwd.confirm.lbl = Confirm Password
+customer.register.btn = Register
+customer.register.pwd.not.match = Passwords do not match
+customer.register.success = Customer Registered!
+customer.register.exist = Customer exist!
+customer.login.heading = Returning Customers
+customer.login.label = Log in
+customer.login.btn.lbl = Login
+customer.login.invalid.email.pwd = Invalid email or password
+customer.login.logout.msg = You have been logged out
+customer.profile.pwd.not.match = Old password did not match
+customer.profile.newpwd.not.match = New Passwords do not match
+customer.profile.user.update = User Updated!
+
+customer.profile.acc.lbl = Account Details
+customer.profile.acc.delivery.adr.lbl = Delivery Address
+customer.profile.acc.bill.adr.lbl = Billing Address
+customer.profile.acc.fname = First Name
+customer.profile.acc.lname = Last Name
+customer.profile.acc.fullname = Full Name
+customer.profile.acc.email = E-Mail
+customer.profile.acc.old.pwd = Old Password
+customer.profile.acc.new.pwd = New Password
+customer.profile.acc.new.pwd.confirm = Confirm New Password
+customer.profile.acc.save.all.btn = Save All Changes
+
+customer.profile.acc.sname = Surname
+customer.profile.acc.add1 = Address Line 1
+customer.profile.acc.add2 = Address Line 2
+customer.profile.acc.city = City
+customer.profile.acc.pcode = Post Code
+customer.profile.acc.country = Country
+customer.profile.acc.check.lbl = My delivery and billing addresses are the same.
+customer.profile.acc.sel.country = --- Choose a country ---
+
+backoffice.country.edit = Edit Country
+backoffice.country.head1 = Countries
+backoffice.country.search.lbl = Filter by country name...
+backoffice.country.search.btn = Filter by name
+backoffice.country.add.btn = Add a new Country
+backoffice.country.name.lbl = Country name
+backoffice.country.code.lbl = Code
+backoffice.country.code3.lbl = Code 3
+backoffice.country.enable.lbl = Enabled
+
+backoffice.country.new.tab1 = Country
+backoffice.country.new.name = Name*
+backoffice.country.new.ccode1 = 2-digit ISO country code *
+backoffice.country.new.ccode1.desc = Specify 2-letter country code. You can find country names and codes here:
+backoffice.country.new.ccode2 = 3-digit ISO country code *
+backoffice.country.new.ccode2.desc = Specify 3-letter country code, for example USA.
+backoffice.country.new.numccode = Numeric ISO country code *
+backoffice.country.new.numccode.desc = Specify 3-digit numeric country code, for example 840 for USA.
+backoffice.country.new.enabled = Enabled
+backoffice.country.new.enabled.desc = Disabled countries are not shown on the front-end store. 
+backoffice.country.new.enabledad =  Enabled in the Administration
+backoffice.country.new.enabledad.desc = Area Use this checkbox if you want the country to be enabled in the Administration Area.
+backoffice.country.del.confirm = Do you really want to delete this country?
+
+backoffice.state.new.tab2 = States
+backoffice.state.new.desc = Define states for the country. If there are no states in the country, leave this list empty.
+backoffice.state.new.heading = State
+backoffice.state.new.code = Code *
+backoffice.state.new.code.desc = Specify state code. You are not restricted by any rules about state codes. {0} Codes are used for referring states in your custom tax and shipping rules.
+backoffice.state.new.name = Name
+
+backoffice.currency.head1 = Currencies
+backoffice.currency.sync.btn = Synchronize Currency Rates
+backoffice.currency.isocode = ISO Code
+backoffice.currency.name = Name
+backoffice.currency.symbol = Symbol
+backoffice.currency.rate = Rate
+backoffice.currency.enable = Enabled In Store
+backoffice.currency.basecur = Base Currency
+backoffice.currency.sync.success = Currency rates were synchronized successfully !!!
+backoffice.currency.sync.fail = Currency rates were not synchronized successfully !!!
+backoffice.currency.isocode.exists = This iso code already exists. Please enter a unique one!
+backoffice.currency.updated = Currency updated !
+backoffice.currency.saved = Currency Saved !
+backoffice.currency.basecur.err = This currency is the base currency. Please select another currency as the base currency before deleting !
+backoffice.currency.deleted = Currency deleted !
+
+backoffice.currency.edit.title = Edit Currency
+backoffice.currency.edit.heading = Currency
+backoffice.currency.edit.code = ISO currency code *
+backoffice.currency.edit.code.desc = Specify 3-letter currency code. You can find currency names and codes here:
+backoffice.currency.edit.name = Name*
+backoffice.currency.edit.symbol = Symbol *
+backoffice.currency.edit.rate = Rate *
+backoffice.currency.edit.enable = Enabled
+backoffice.currency.edit.enable.desc = Disabled currencies are not shown on the front-end store.
+backoffice.currency.edit.basecur = Base Currency
+backoffice.currency.edit.basecur.desc = This sets this currency as the base currency in the store.
+backoffice.currency.del.confirm = Do you really want to delete this currency?
+
+backoffice.tax.title = Tax Class List
+backoffice.tax.head1 = Tax Class List
+backoffice.tax.search.lbl = Filter by tax class name...
+backoffice.tax.search.btn = Filter by name
+backoffice.tax.add.btn = Add a new Tax Class
+backoffice.tax.name.lbl = Name
+backoffice.tax.desc.lbl = Description
+backoffice.tax.new.tab1 = Tax Class
+backoffice.tax.new.tab2 = Rates
+backoffice.tax.tab1.head1 = Tax Class
+backoffice.tax.default = Default
+
+backoffice.tax.rate.head1 = Rates
+backoffice.tax.rate.country = Country
+backoffice.tax.rate.state = State
+backoffice.tax.rate.zip = ZIP
+backoffice.tax.rate.city = City
+backoffice.tax.rate.rate = Rate
+backoffice.tax.rate.priority = Priority
+backoffice.tax.rate.name = Tax Name
+backoffice.tax.rate.compound = Compound
+backoffice.tax.rate.addnew = Add another Rate
+
+backoffice.ship.title = Shipping Options
+backoffice.ship.name = Name
+backoffice.ship.type = Shipping Type
+backoffice.ship.desc = Description
+backoffice.ship.enablestore = Enable On the Store
+backoffice.ship.enablebackofce = Enable in the Back office
+backoffice.ship.taxable = Taxable
+backoffice.ship.handling = Handling Fee
+backoffice.ship.minweight = Minimum Weight
+backoffice.ship.maxweight = Maximum Weight
+
+backoffice.ship.tab1 = General Parameters
+backoffice.ship.tab2 = Rates
+backoffice.ship.tab3 = Visibility
+backoffice.ship.tab4 = Countries
+backoffice.ship.title = New Table Rate
+
+backoffice.ship.tab1.enablefront = Enabled on the front-end website
+backoffice.ship.tab1.enablefront.desc = Make this shipping option available on the front-end website.
+backoffice.ship.tab1.enableadmin = Enabled in the Administration Area
+backoffice.ship.tab1.enableadmin.desc = Make this shipping option available in the Administration area.
+backoffice.ship.tab1.name = Name *
+backoffice.ship.tab1.name.desc = Name of the shipping option. It will be displayed on the front-end website.
+backoffice.ship.tab1.handling = Handling Fee
+backoffice.ship.tab1.handling.desc = Please specify a handling fee for this shipping method. The handling fee will be added to the shipping quote.
+backoffice.ship.tab1.minweight = Minimum Weight
+backoffice.ship.tab1.minweight.desc = The shipping option will be ignored if the package weight is less than the specified value. Leave the field empty to cancel the minimum weight check.
+backoffice.ship.tab1.taxable = Taxable
+backoffice.ship.tab1.taxable.desc = Use tax class "Shipping" to specify tax rates for different locations.
+backoffice.ship.tab1.desc = Description
+backoffice.ship.tab1.desc.desc = If provided, it will be displayed on the front-end website.
+backoffice.ship.tab1.apicode = OBC API Code
+backoffice.ship.tab1.apicode.desc = You can use the API Code for identifying the shipping method in the API calls.
+backoffice.ship.tab1.maxweight = Maximum Weight
+backoffice.ship.tab1.maxweight.desc = The shipping option will be ignored if the package weight is more than the specified value. Leave the field empty to cancel the maximum weight check.
+
+backoffice.ship.tab2.country = Country
+backoffice.ship.tab2.state = State
+backoffice.ship.tab2.zip = ZIP
+backoffice.ship.tab2.city = City
+backoffice.ship.tab2.minweight = Min Weight
+backoffice.ship.tab2.maxweight = Max Weight
+backoffice.ship.tab2.minvol = Min Volume
+backoffice.ship.tab2.maxvol = Max Volume
+backoffice.ship.tab2.minsub = Min Subtotal
+backoffice.ship.tab2.maxsub = Max Subtotal
+backoffice.ship.tab2.minitem = Min Items
+backoffice.ship.tab2.maxitem = Max Items
+backoffice.ship.tab2.rate = Rate
+
+backoffice.ship.tab3.head1 = Customer Groups
+backoffice.ship.tab3.desc = Please select customer groups the shipping options should be available for. If no groups are selected, the shipping option will be available for all customer groups.
+
+backoffice.ship.tab4.head1 = Countries
+backoffice.ship.tab4.desc = Countries the shipping method is applicable to. Uncheck all countries to make the shipping method applicable to any country.
+
+backoffice.admin.head1 = Administration Area
+backoffice.admin.edit.title = Edit Admin Users
+backoffice.admin.edit.heading = Admin Users
+backoffice.admin.edit.name = Name
+backoffice.admin.edit.username = Username
+backoffice.admin.edit.password = Password
+backoffice.admin.edit.type = Type
+backoffice.admin.login.username.lbl = Username
+backoffice.admin.login.password.lbl = Password
+backoffice.admin.super.admin.delete.err = Super admin cannot be deleted!!
+backoffice.admin.deleted = Admin deleted!
+backoffice.admin.del.confirm = Do you really want to delete this admin user?
+backoffice.admin.login.err = Incorrect username or password!
+backoffice.admin.users.head1 = Admin Users
+
+backoffice.admin.orderprocess.head1 = Process Orders
+

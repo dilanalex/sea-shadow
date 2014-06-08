@@ -1,0 +1,79 @@
+@(currencies: List[models.Currency])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+ 
+@handleYesNo(value:Boolean)={
+	@if(value==true){Yes} else {No}
+}
+
+@cpanel({Messages("backoffice.currency.head1")}, null) {
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	}
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	
+	<h2>@{Messages("backoffice.currency.head1")}</h2>
+	<br>
+	
+	
+	<a class="btn btn-primary" id="add" href="@controllers.backoffice.routes.Currencies.show(new ObjectId())">
+		<i class="icon-plus icon-white"></i>
+		Add
+	</a>
+	<a class="btn btn-primary" id="updateRates" href="@controllers.utils.routes.Common.updateCurrencyRates">
+		<i class="icon-play icon-white"></i>@{Messages("backoffice.currency.sync.btn")}
+	</a>
+	
+	
+	<table class="table">
+		<tr>
+			<th>@{Messages("backoffice.currency.isocode")}</th>
+			<th>@{Messages("backoffice.currency.name")}</th>
+			<th>@{Messages("backoffice.currency.symbol")}</th>
+			<th>@{Messages("backoffice.currency.rate")}</th>
+			<th>@{Messages("backoffice.currency.enable")}</th>
+			<th>@{Messages("backoffice.currency.basecur")}</th>
+		</tr>
+	 	
+	 	@currencies.map{currency =>
+	 		
+	 		<tr>
+	 		@if(currency.baseCurrency){
+	 			
+	 			<td><font style="color:green;font-weight: bold;">@currency.iso</font> </td>
+	 			<td><a href="@controllers.backoffice.routes.Currencies.show(currency.id)"><font style="color:green;font-weight: bold;"> @currency.name</font></a> </td>
+	 			<td><font style="color:green;font-weight: bold;'">@currency.symbol</font> </td>
+	 			<td><font style="color:green;font-weight: bold;">@currency.rate</font> </td>
+	 			<td><font style="color:green;font-weight: bold;">@handleYesNo(currency.enabled)</font> </td>
+	 			<td><font style="color:green;font-weight: bold;">@handleYesNo(currency.baseCurrency)</font></td>
+	 			
+	 			}else{
+	 			@if(currency.enabled){
+	 			
+	 				<td>@currency.iso </td>
+		 			<td><a href="@controllers.backoffice.routes.Currencies.show(currency.id)"> @currency.name</a></td>
+		 			<td>@currency.symbol</td>
+		 			<td>@currency.rate</td>
+		 			<td>@handleYesNo(currency.enabled)</td>
+		 			<td>@handleYesNo(currency.baseCurrency)</td>
+		 		
+		 		} else{	
+		 			<td><font style="color:grey">@currency.iso</font> </td>
+		 			<td><a href="@controllers.backoffice.routes.Currencies.show(currency.id)"><font style="color:grey"> @currency.name</font></a></td>
+		 			<td><font style="color:grey">@currency.symbol</font></td>
+		 			<td><font style="color:grey">@currency.rate</font></td>
+		 			<td><font style="color:grey">@handleYesNo(currency.enabled)</font></td>
+		 			<td><font style="color:grey">@handleYesNo(currency.baseCurrency)</font></td>
+		 		} }	
+	 		</tr>	
+
+	 	}
+	 	
+ 	</table>	
+
+}

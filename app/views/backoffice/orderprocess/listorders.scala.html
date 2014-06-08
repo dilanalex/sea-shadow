@@ -1,0 +1,37 @@
+@(orders: List[models.Order])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@cpanel("Process Orders", null) {
+
+<h1>@{Messages("backoffice.admin.orderprocess.head1")}</h1>
+  
+	@if(orders.isEmpty) {
+     <div class="alert alert-info">
+     @Html({Messages("order.history.empty.msg","""<a href='""" + routes.Products.index +  	"""'>""" , "</a>")})
+     </div>
+	} else {
+	 <table class="table table-striped">
+	  <thead>
+	    <tr>
+		  <th>@{Messages("order.history.date")}</th>
+		  <th>@{Messages("order.history.orderid")}</th>
+		  <th>@{Messages("order.history.total")}</th>
+		</tr>
+	  </thead>
+	  <tbody>
+	  @orders.map { order =>
+	    <tr>
+		  <td>2012-01-02 : 12.23 PM</td>
+		  <td><a href="@controllers.backoffice.routes.OrderProcess.show(order.id)">@order.id</a></td>
+		  <td>£@order.subTotal</td>
+		</tr>	 
+	  }
+      </tbody>
+     </table>
+	}
+  	
+
+}

@@ -1,0 +1,99 @@
+@(adminForm: Form[models.Admin])(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>  
+}
+
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }
+      
+    </div>
+  </div>  
+}
+
+
+
+@cpanel({Messages("backoffice.admin.edit.title")}, null) {
+
+
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+   @adminForm.globalError.map { error =>        
+        <div class='row'>
+          <div class="alert alert-error">@error.message</div>
+        </div>        
+   }
+     
+	@form(action = controllers.backoffice.routes.Admins.save, 'class -> "form-vertical", 'id -> "adminForm", 'name -> "adminForm") {
+	 
+		
+	    
+	  <h3>@{Messages("backoffice.admin.edit.heading")}</h3>
+	  
+	  	<br>
+	  
+	  	@input(adminForm("adminId"), "", 'hidden) 
+	  	
+	  	@input(adminForm("adminType"), "", 'hidden)
+	    
+	    <strong>@{Messages("backoffice.admin.edit.name")}</strong><br>
+	    @input(adminForm("name"), "",'text)
+	    
+	    
+	    <strong>@{Messages("backoffice.admin.edit.username")}</strong>   
+	    @input(adminForm("username"), "", 'text)
+	   
+	    <strong>@{Messages("backoffice.admin.edit.password")}</strong><br>
+	    @input(adminForm("password"), "",'password)
+	
+			
+	    <br>
+	    <input type="submit" name="save" id="save" class="btn btn-primary" value="Save"/>
+	  
+	  	<a class="btn btn-medium btn-danger" href="#@adminForm("adminId").value" data-toggle="modal">
+	  	  <i class="icon-trash icon-white"></i></a>
+		   <div class="modal hide" id="@adminForm("adminId").value">	       
+	    		<div class="modal-body"><p>@{Messages("backoffice.admin.del.confirm")}</p></div>
+	        	<div class="modal-footer">
+		    		<a href="#" class="btn" data-dismiss="modal">@{Messages("common.no")}</a>
+		    		<a href="@controllers.backoffice.routes.Admins.delete(new ObjectId(adminForm("adminId").value.get))" class="btn btn-primary">@{Messages("common.yes")}</a>
+		      	</div>
+	    	</div>		    
+	    
+	    
+	   <a class="btn btn-primary" id="Back" href="@controllers.backoffice.routes.Admins.listusers()">Back</a>    
+	    
+	   
+	 }
+
+}

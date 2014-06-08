@@ -1,0 +1,49 @@
+@(admins: List[models.Admin])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+ 
+@handleYesNo(value:Boolean)={
+	@if(value==true){Yes} else {No}
+}
+
+@cpanel({Messages("backoffice.admin.head1")}, null) {
+
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	}
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	
+	<h2>@{Messages("backoffice.admin.users.head1")}</h2>
+	<br>
+	
+	
+	<a class="btn btn-primary" id="add" href="@controllers.backoffice.routes.Admins.show(new ObjectId())">
+		<i class="icon-plus icon-white"></i>
+		Add
+	</a>
+	
+	
+	<table class="table">
+		<tr>
+			<th>@{Messages("backoffice.admin.edit.name")}</th>
+			<th>@{Messages("backoffice.admin.edit.username")}</th>
+			<th>@{Messages("backoffice.admin.edit.type")}</th>
+		</tr>
+	 	
+	 	@admins.map{admin =>
+	 		
+	 		<tr>
+	 			<td><font style="color:grey">@admin.name</font> </td>
+		 		<td><a href="@controllers.backoffice.routes.Admins.show(admin.id)"><font style="color:grey"> @admin.username</font></a></td>
+		 		<td><font style="color:grey">@admin.adminType</font></td>
+	 	    </tr>	
+
+	 	}
+	 	
+ 	</table>	
+
+}

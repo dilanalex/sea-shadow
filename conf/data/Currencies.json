@@ -1,0 +1,89 @@
+[
+    {
+        "_id": {
+            "$oid": "50507e0dc24b8bc245fd76c3"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "LKR",
+        "name": "Sri Lankan Rupees",
+        "symbol": "₨",
+        "rate": 213.9608,
+        "enabled": true
+    },
+    {
+        "_id": {
+            "$oid": "5051ad5dc24bfe92047ea1af"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "USD",
+        "name": "United States Dollar",
+        "symbol": "$",
+        "rate": 1.6191,
+        "enabled": true
+    },
+    {
+        "_id": {
+            "$oid": "5051c405c24bfe92047ea1d2"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "GBP",
+        "name": "United Kingdom Pound",
+        "symbol": "£",
+        "rate": 1,
+        "enabled": true,
+        "baseCurrency": true
+    },
+    {
+        "_id": {
+            "$oid": "5051c43ec24bfe92047ea1d6"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "JPY",
+        "name": "Japanese Yen",
+        "symbol": "¥",
+        "rate": 125.6904,
+        "enabled": true
+    },
+    {
+        "_id": {
+            "$oid": "5052db50c24b0390b6968c39"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "AUD",
+        "name": "Australia Dollar",
+        "symbol": "$",
+        "rate": 1.5312,
+        "enabled": true
+    },
+    {
+        "_id": {
+            "$oid": "5052db62c24b0390b6968c3b"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "CHF",
+        "name": "Switzerland Franc",
+        "symbol": "CHF",
+        "rate": 1.5115
+    },
+    {
+        "_id": {
+            "$oid": "5052db98c24b0390b6968c3d"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "CNY",
+        "name": "China Yuan Renminbi",
+        "symbol": "¥",
+        "rate": 10.2408
+    },
+    {
+        "_id": {
+            "$oid": "5052e358c24b0390b6968c6c"
+        },
+        "_typeHint": "models.Currency",
+        "iso": "EUR",
+        "name": "Euro Member Countries",
+        "symbol": "€",
+        "rate": 1.2427,
+        "enabled": true
+    }
+]

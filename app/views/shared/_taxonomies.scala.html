@@ -1,0 +1,12 @@
+@(taxonomy: Taxonomy = null)
+@import helpers._
+
+<ul class="nav nav-list">
+  <li class="nav-header">
+    Taxonomies
+  </li>
+  @Taxonomies.children(taxonomy).map { term =>
+    <li><a href="@routes.Products.search(term.path)">@term.name</a></li>
+  }
+</ul>
+

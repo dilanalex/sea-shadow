@@ -1,0 +1,58 @@
+@(user: securesocial.core.SocialUser, order: models.Order)(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Order", user) {
+  <h1>@{Messages("order.thankyou")}</h1>
+ 
+  <br>
+  <h5>@{Messages("order.ref.lbl")} :@order.id</h5>
+ 
+  <hr>
+  <h4>@{Messages("order.cust.detail.lbl")}</h4>
+  <br/>
+  
+  <strong> @{Messages("common.name")}    : </strong>@order.shipAddresses.get.firstName @order.shipAddresses.get.lastName <br/>
+  <strong> @{Messages("common.shipping.adr")} :</strong> @order.shipAddresses.get.addLine1, @order.shipAddresses.get.addLine2, 
+	  					 @order.shipAddresses.get.city, @order.shipAddresses.get.postCode, 
+	  					 @order.shipAddresses.get.country
+  <br/>
+  <strong> @{Messages("common.billing.adr")} : </strong> @order.billAddresses.get.addLine1, @order.billAddresses.get.addLine2,
+	  					 @order.billAddresses.get.city, @order.billAddresses.get.postCode,
+	  					 @order.billAddresses.get.country 
+  <hr>			 
+  <h4>@{Messages("common.cart.details")}:</h4>
+  <br>
+	<div class="row-fluid">
+  		<div class="span1"><span class="label">@{Messages("cart.item.lbl")}</span></div>
+      	<div class="span3"></div>
+     	<div class="span2"><span class="label">@{Messages("cart.quantity.lbl")}</span></div>    
+      	<div class="span1"><span class="label">@{Messages("cart.price.lbl")}</span></div>
+      	<div class="span1"><span class="label">@{Messages("cart.totaltax.lbl")}</span></div>
+      	<div class="span1"><span class="label">@{Messages("cart.total.lbl")}</span></div>      	
+    </div>
+
+	@order.lineItems.map { lineItem =>  
+	<div class="row-fluid">
+		<div class="span1"><img src="/images/getimage?imageName=@lineItem.image&width=83&height=111" /></div>
+		<div class="span3"><strong>@lineItem.title</strong><br/></div>
+		<div class="span2">@lineItem.qty</div>
+	    <div class="span1">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,lineItem.price)</div>
+	    <div class="span1">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,lineItem.tax)</div>
+	    <div class="span1">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,((lineItem.price*lineItem.qty)+lineItem.tax))</div>  
+	</div>
+}
+
+	<div class="row-fluid">		
+		<div class="span8" style="text-align: right">
+	
+			<h5>@{Messages("common.sales.tax")} : @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.productTax)</h5>
+			<h5>@{Messages("common.shippingHandling.fee")} : @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.shipFee)</h5>
+			<h5>@{Messages("common.shipping.tax")} : @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,order.shipTax)</h5>
+			<br>
+			<h4>@{Messages("common.grand.total")} : @CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,(order.subTotal + order.shipFee + order.shipTax + order.productTax))</h4>
+		</div>
+	</div>
+}

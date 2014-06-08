@@ -1,0 +1,178 @@
+@(countryForm: Form[models.Country],statesList: List[models.State],tab:Int)(implicit request: RequestHeader, flash: Flash,  l: Lang=Lang("en"))
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+
+
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+   
+      @if(field.hasErrors){
+        <span class="help-inline">
+           @Messages(field.error.head.message)
+        </span>
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@cpanel({Messages("backoffice.country.edit")}, null) {
+
+	@if(flash.data.contains("message")){
+		<div class="alert alert-success">@flash.get("message")</div>
+	}
+ 	@if(flash.data.contains("errormessage")){
+    <div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+  @countryForm.globalError.map { error =>
+    <div class='row'>
+      <div class="alert alert-error">@error.message</div>
+    </div>
+  }
+
+<div class="tabbable tabs-top">  
+   <ul class="nav nav-tabs">
+   @if(tab==2){
+     <li ><a data-toggle="tab" href="#lA"><strong>@Html({Messages("backoffice.country.new.tab1")})</strong></a></li>
+     <li class="active"><a data-toggle="tab" href="#lB"><strong>@Html({Messages("backoffice.state.new.tab2")})</strong></a></li>
+     }else{
+	     <li class="active"><a data-toggle="tab" href="#lA"><strong>@Html({Messages("backoffice.country.new.tab1")})</strong></a></li>
+	     <li ><a data-toggle="tab" href="#lB"><strong>@Html({Messages("backoffice.state.new.tab2")})</strong></a></li>
+     }
+    </ul>
+  
+@form(action = controllers.backoffice.routes.Countries.save, 'class -> "form-vertical", 'id -> "countryForm", 'name -> "countryForm") {
+    <div class="tab-content">
+    @if(tab==1){
+      <div id="lA" class="tab-pane active">
+      }else{
+      	<div id="lA" class="tab-pane ">
+      }
+        <p>           
+         <fieldset>
+         
+        	@input(countryForm("countryId"), "", 'hidden) 
+        	<strong>@{Messages("backoffice.country.new.name")}</strong>   
+		    @input(countryForm("name"), "", 'text)
+		    <strong>@{Messages("backoffice.country.new.ccode1")}</strong><br>
+		    @{Messages("backoffice.country.new.ccode1.desc")}<br>
+		    <a href="http://en.wikipedia.org/wiki/ISO_3166-1">http://en.wikipedia.org/wiki/ISO_3166-1</a> 
+		    @input(countryForm("code"), "",'text)
+			<strong>@{Messages("backoffice.country.new.ccode2")}</strong><br>
+			@{Messages("backoffice.country.new.ccode2.desc")}
+		    @input(countryForm("code3"), "", 'text)
+		    <strong>@{Messages("backoffice.country.new.numccode")}</strong><br>
+		    @{Messages("backoffice.country.new.numccode.desc")}
+		    @input(countryForm("codeIsoNumeric"), "", 'text) 
+		   
+		    <div class="controls">
+   			   <input type="checkbox"  id="@countryForm("enabled").id" 
+   			   name="@countryForm("enabled").id" value="true" @if(countryForm("enabled").value.isDefined){ checked}/> 
+   			   <strong>@{Messages("backoffice.country.new.enabled")}</strong><br>
+   			   @{Messages("backoffice.country.new.enabled.desc")}
+   			</div>
+   			
+   			<div class="controls">
+   			   <input type="checkbox"  id="@countryForm("enabledInAA").id" 
+   			   name="@countryForm("enabledInAA").id" value="true" @if(countryForm("enabledInAA").value.isDefined){ checked}/> 
+   			   <strong>@{Messages("backoffice.country.new.enabledad")}</strong><br>
+   			    @{Messages("backoffice.country.new.enabledad.desc")}
+   			</div>
+		    
+		    <br>
+		    <input type="submit" name="save" id="save" class="btn btn-primary" value="Save"/>
+    
+		  	<a class="btn btn-medium btn-danger" href="#@countryForm("countryId").value" data-toggle="modal">
+		  	  <i class="icon-trash icon-white"></i></a>
+			   <div class="modal hide" id="@countryForm("countryId").value">	       
+		    		<div class="modal-body"><p>@{Messages("backoffice.country.del.confirm")}</p></div>
+		        	<div class="modal-footer">
+			    		<a href="#" class="btn" data-dismiss="modal">@{Messages("common.no")}</a>
+			    		<a href="@controllers.backoffice.routes.Countries.delete(new ObjectId(countryForm("countryId").value.get))" class="btn btn-primary">@{Messages("common.yes")}</a>
+			      	</div>
+		    	</div>		    
+		    
+		   <a class="btn btn-primary" id="Back" href="@controllers.backoffice.routes.Countries.list(0, 2,"")">@{Messages("common.back")}</a> 
+         </fieldset>         
+        </p>
+        
+      </div>
+       @if(tab==2){
+	      <div id="lB" class="tab-pane active">
+	      }else{
+	      	<div id="lB" class="tab-pane ">
+	      }
+        <p>
+         <fieldset>  
+      	   <p>@{Messages("backoffice.state.new.desc")}<p>
+      	   <br>
+      	  <a class="btn btn-primary" id="add" href="@controllers.backoffice.routes.States.show(new ObjectId(),new ObjectId(countryForm("countryId").value.get))">
+			  	<i class="icon-plus icon-white"></i>
+			  	Add
+			</a>
+       	
+	       	<table class="table table-striped table-bordered">
+				<tr>
+					<th>Code</th>
+					<th>Name</th>
+					<th></th>
+				</tr>
+	         	@statesList.map { state =>
+					 <tr>
+						<td><a href=@controllers.backoffice.routes.States.show(state.id,new ObjectId(countryForm("countryId").value.get))>@state.code</a></td>
+					  	<td>@state.name</td>
+					  	<td>
+					  		 <a class="btn btn-medium btn-danger" href="#@state.id" data-toggle="modal">
+						  	  <i class="icon-trash icon-white"></i></a>
+							   <div class="modal hide" id="@state.id">	       
+						    		<div class="modal-body"><p>Do you really want to delete this state?</p></div>
+						        	<div class="modal-footer">
+							    		<a href="#" class="btn" data-dismiss="modal">No</a>
+							    		<a href="@controllers.backoffice.routes.States.delete(state.id,new ObjectId(countryForm("countryId").value.get))" class="btn btn-primary">Yes</a>
+							      	</div>
+						    	</div>	
+					  	</td>
+					</tr>
+					}
+			</table>
+			
+			
+		    	
+		    	
+         </fieldset>
+        </p>
+      </div>
+   
+    </div>
+    
+    
+ }
+
+
+</div>      
+
+}

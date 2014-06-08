@@ -1,0 +1,426 @@
+@(catalogPriceRulesForm: Form[CatalogPriceRules], chkCustomerGroups: List[String], tab: Int, rulecondition: List[RuleCondition] = List())(implicit request: RequestHeader,  flash: Flash)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text, styleClass: String = "", dateformat : String = "", smltxt : String = "") = {  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <strong>@label</strong><br/>
+    @if(smltxt != ""){<small>@smltxt</small><br/>}
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" class="@styleClass"
+        @if(dateformat != ""){ data-date-format="@dateformat"} />     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }      
+    </div>
+  </div>  
+}
+
+@inputTxtArea(field: Field, label: String) = {  
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left;">
+   <strong>@label</strong><br/>
+    <div class="controls">
+      <textarea rows="2" id="@field.id"  name="@field.name" class="input-xlarge">@field.value</textarea>
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }          
+    </div>      
+  </div>  
+}
+
+@inputChkBox(field: Field, label: String) = { 
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left;">
+    <div class="controls">
+	  <input type="checkbox" id="@field.id" name="@field.name" value="true" @if(field.value.isDefined){ checked}/> 
+	 </div>
+  </div>
+}
+
+@select(field: Field, label: String) = {  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+       <select class="span3" id="@field.id" name="@field.name">       	      		
+		@for(a <- AttributesOperators.actions) {
+		  @if(field.value.getOrElse("").equalsIgnoreCase(a._1)){
+				<option value="@a._1" selected="selected">@a._2</option>
+			} else {
+				<option value="@a._1">@a._2</option>
+			}				
+		}			     	
+       </select>    
+      @if(field.hasErrors){      
+        <span class="help-inline">@Messages(field.error.head.message)</span>        
+      }      
+    </div>
+  </div>  
+}
+
+
+@cpanel("New Catalog Price Rule", null) {
+    @if(catalogPriceRulesForm.hasErrors) {	
+	  <div class="alert alert-error">
+	  	<p><strong></strong> Please fix all errors highlighted in red.<br/>(i.e: @catalogPriceRulesForm.errors.head.message field)</p>
+	  </div>	  
+	}
+    @if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+  	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+    @catalogPriceRulesForm.globalError.map { error =>        
+	  <div class='row'>
+	    <div class="alert alert-error">@error.message</div>
+	  </div>        
+    }
+    <div class="alert alert-error hide" id="alert"></div>	
+    
+    @form(action = controllers.backoffice.routes.PriceRules.save, 'class -> "form-vertical", 'id -> "catalogPriceRulesForm", 'name -> "catalogPriceRulesForm") {
+		
+		<div class="tabbable tabs-top">
+		  <ul class="nav nav-tabs">
+			 @if(tab==1){
+			   <li class="active"><a id="t1" data-toggle="tab" href="#lA">Rule Settings</a></li>
+     		   <li ><a id="t2" data-toggle="tab" href="#lB">Conditions</a></li>
+     		   <li ><a id="t3" data-toggle="tab" href="#lC">Action</a></li>
+			 } 
+			 @if(tab==2){
+			   <li ><a id="t1" data-toggle="tab" href="#lA">Rule Settings</a></li>
+     		   <li class="active"><a id="t2" data-toggle="tab" href="#lB">Conditions</a></li>
+     		   <li ><a id="t3" data-toggle="tab" href="#lC">Action</a></li>
+			 } 
+			 @if(tab==3){
+			   <li ><a id="t1" data-toggle="tab" href="#lA">Rule Settings</a></li>
+     		   <li ><a id="t2" data-toggle="tab" href="#lB">Conditions</a></li>
+     		   <li class="active"><a id="t3" data-toggle="tab" href="#lC">Action</a></li>
+			 }     		     		
+    	  </ul>
+    	<div class="tab-content">
+   		  @if(tab==1){
+		   <div id="lA" class="tab-pane active">
+		  } 
+		  @if(tab==2){
+		   <div id="lA" class="tab-pane">
+		  }
+		  @if(tab==3){
+		   <div id="lA" class="tab-pane">
+		  }    		
+    			<fieldset>				   
+				   @input(catalogPriceRulesForm("catalogPriceRuleId"), "", 'hidden)
+				   <input type="hidden" value="1" id="tab" name="tab"/>
+				   <input type="hidden" value="" id="link" name="link"/>
+				   <input type="hidden" name="rulesize" id="rulesize" value="@rulecondition.size">				          						
+				   <div class="row-fluid">
+				     <div class="span12">@inputChkBox(catalogPriceRulesForm("active"), "")
+				     <strong>&nbsp;Enable</strong><br/>						         							  								  							     
+				     </div>						     
+				   </div>						   
+				   <div class="row-fluid">
+				   	 <div class="span12">				   	 
+				   	   @input(catalogPriceRulesForm("name"), "Name *", 'text, "input-xlarge", "", "")				   	   				        						     
+				     </div>						     
+				   </div>
+				   <div class="row-fluid">
+				     <div class="span12">				   	 	    				    
+				        @inputTxtArea(catalogPriceRulesForm("description"), "Description *")					     
+				     </div>
+				   </div>
+				   <div class="row-fluid">
+				     <div class="span2">				   	
+				       @input(catalogPriceRulesForm("dateStart"), "From Date", 'text, "input-small", "dd-mm-yyyy", "")    				        				    			     
+				     </div>
+				     <div class="span2 offset1">
+				   	   @input(catalogPriceRulesForm("dateEnd"), "To Date", 'text, "input-small", "dd-mm-yyyy", "")    				       				    
+				     </div>
+				   </div>
+				   <div class="row-fluid">
+				     <div class="span12">
+				     <strong>Customer Groups</strong><br>
+		 			   <small>Please select customer groups the rule is enabled for.<br/>
+		 			   Do not select any group to make the rule enabled for all customer groups.</small><br/>
+		 			   @CustomerGroup.customerGroups.map{var x = 0; customerGroup =>		 		
+		 		         <input type="checkbox"  id="cg_@x" name="cg_@x" value="@customerGroup.id"				
+				         @if(chkCustomerGroups.contains(customerGroup.id.toString)){ checked }/> @customerGroup.name <br/>				       
+				         @{x=x+1}	         
+				       }
+				     </div>
+				   </div>				   				  
+				</fieldset>
+    		</div>
+    		@if(tab==1){
+			<div id="lB" class="tab-pane">
+			} 
+            @if(tab==2){
+			<div id="lB" class="tab-pane active">
+			}
+			@if(tab==3){
+			<div id="lB" class="tab-pane">
+			}  
+			    		      		  
+   		      <div class="modal hide fade" id="conditionSelect" >
+			    <div class="modal-header">
+			      <button type="button" class="close" data-backdrop="true" data-dismiss="modal" aria-hidden="true">&times;</button>
+			      <h3>Add Condition</h3>
+			    </div>
+			    <div class="modal-body">
+			      <strong>Condition Type</strong><br/>
+			      <select id="ConditionType" name="ConditionType">
+					  <option value="0">Please select a condition</option>
+					  <!--option value="Shop_RuleIfCondition">Compound condition</option-->
+					  <optgroup label="Product or product attribute">
+					  @for(a <- AttributesOperators.attributes) {
+					  <option value="@a._1">@a._2</option>					  
+					  }					  
+					  </optgroup>
+					  <!--optgroup label="Product ATTR">
+					  <option value="Shop_ProductAttr_Condition:attr_Selller">Product ATTR: Seller</option>
+					  </optgroup-->
+					</select>
+					<div id="conditions"></div>
+			    </div>
+			    <div class="modal-footer">
+			      <a href="#" class="btn" data-dismiss="modal">Close</a>
+			      <a class="btn btn-success" data-backdrop="true" data-toggle="modal" data-target="#conditionLoad" href="#">Create</a>
+			    </div>
+			  </div>    		  
+    		  
+    		  <div id="conditionLoad" class="modal hide fade modal-admin" style="display: none;" data-color="grey"></div>
+    		  <div id="conditionLoadEdit" class="modal hide fade modal-admin" style="display: none;" data-color="grey"></div>
+    		  
+    		  <div id="RuleLists" class="accordion" style="width: 100%">
+			    <div class="accordion-group">
+			      <div class="accordion-heading">        
+			        <table>
+					  <tr>
+					    <td width="7%"><a style="display: inline;" href="#collapse" data-parent="#RuleLists" data-toggle="collapse" class="accordion-toggle"><i class="icon-chevron-down"></i></td>
+					    <td width="93%">ALL of subconditions should be TRUE</td>					    
+					  </tr>
+					</table>			       
+			      </div>
+			      <div class="accordion-body in collapse" id="collapse" style="height: auto;">
+			        <div class="accordion-inner">
+			          <ul class="nav nav-list" id="rulelist">    		  
+		    		  @if(!rulecondition.isEmpty) {	
+					    @rulecondition.map {var x = 0; row =>
+						    <li id="tr@x">
+							  <div class="alert alert-info"><input type='hidden' value='@row.id' name='conditions[@x].conditionId' id='conditions[@x].conditionId'/>
+							  <input type='hidden' value='@row.attribute' name='conditions[@x].attribute' id='conditions[@x].attribute'/>
+							  <input type='hidden' value='@row.operator' name='conditions[@x].operator' id='conditions[@x].operator'/>
+							  <input type='hidden' value='@row.cvalue' name='conditions[@x].cvalue' id='conditions[@x].cvalue'/>
+							  @if(row.attribute.equals("Product")){					  
+							   @row.attribute <b>@AttributesOperators.productOperators.find(p => p._1 == row.operator.get).get._2</b> (
+							    @row.products.map {var p = 0; var s = row.products.size; prd =>						    	
+								  @prd._2@if(s == p+1){.} else {,}
+								  <input type='hidden' value="@prd._1" name='conditions[@x].products[@p].id' id='conditions[@x].products[@p].id'/>
+								  <input type='hidden' value="@prd._2" name='conditions[@x].products[@p].name' id='conditions[@x].products[@p].name'/>
+								  @{p=p+1}
+								}
+								  ) 
+							  } else {
+							    @if(row.attribute.equals("Categories")){
+							     Product @row.attribute <b>@AttributesOperators.categoryOperators.find(p => p._1 == row.operator.get).get._2</b> (
+							      @row.products.map {var p = 0; var s = row.products.size; prd =>						    	
+								  @prd._2@if(s == p+1){.} else {,}
+								    <input type='hidden' value="@prd._1" name='conditions[@x].products[@p].id' id='conditions[@x].products[@p].id'/>
+								    <input type='hidden' value="@prd._2" name='conditions[@x].products[@p].name' id='conditions[@x].products[@p].name'/>
+								  @{p=p+1}
+								  }
+								  )
+							    } else {
+							      Product @AttributesOperators.attributes.find(p => p._1 == row.attribute).get._2 <b>@AttributesOperators.operators.find(p => p._1 == row.operator.get).get._2</b> @row.cvalue.
+							    }
+							  }	      
+								      <a class="btn btn-mini btn-success" data-backdrop="true" data-toggle="modal" data-target="#conditionLoadEdit" href="/backoffice/cprproductlist?tr=tr@x&id2=@row.id&id1="><i class="icon-pencil icon-white"></i></a>
+								      <a class="btn btn-mini btn-danger" onclick="removethis('tr@x')"><i class="icon-trash icon-white"></i></a>
+								      @{x=x+1}
+						    		  @if( rulecondition.size!= x ){<span style="float: right"><b>AND</b></span>}						      
+						      </div>
+						    </li>						    
+						}	
+					  }  		  
+		    		  </ul>
+		    		  <a class="btn btn-success" href="#conditionSelect" data-toggle="modal"><i class="icon-plus icon-white"></i></a>
+			        </div>			        
+			      </div>
+			    </div>                
+			  </div>
+		 	
+		 	</div>
+		 	@if(tab==1){
+			<div id="lC" class="tab-pane">
+			}
+            @if(tab==2){
+			<div id="lC" class="tab-pane">
+			}
+			@if(tab==3){
+			<div id="lC" class="tab-pane active">
+			}
+				<fieldset>			   			          						
+				   <div class="row-fluid">
+				     <div class="span12">@inputChkBox(catalogPriceRulesForm("terminatingRule"), "")
+				     <strong>&nbsp;Terminating Rule</strong><br/>
+				     <small>&nbsp;Stop processing other rules for the same products, if this rule took effect.</small><br/><br/>						         							  								  							     
+				     </div>						     
+				   </div>
+				   <div class="row-fluid">
+				     <div class="span12">
+				     <strong>Action</strong><br>	 			  
+		 			   @select(catalogPriceRulesForm("action"), "")
+				     </div>
+				   </div>
+				   <div class="row-fluid">
+				   	 <div class="span12">				   	 
+				   	   @input(catalogPriceRulesForm("discountAmount"), "Value *", 'text, "input-xlarge", "", "Please specify an amount to subtract from the product original price.")				   	   				        						     
+				     </div>						     
+				   </div>				   				  
+				</fieldset>		 		
+		 	</div>
+    	</div>
+		</div>
+		<div class="form-actions">
+		    <input type="submit" class="btn btn-primary" value="Save">
+		    <a class="btn btn-primary" id="Back" href="@controllers.backoffice.routes.PriceRules.lists">Cancel</a> 
+		    	 		    
+		</div>
+	}
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/datepicker.css")">
+	<script type="text/javascript" charset="utf-8" src="@routes.Assets.at("javascripts/bootstrap-datepicker.js")" ></script>
+	
+	<script type="text/javascript" charset="utf-8">
+	productList = [];
+	var startDate = new Date();	
+	var dd = startDate.getDate();
+	var mm = startDate.getMonth()+1; //January is 0!
+	var yyyy = startDate.getFullYear();	
+	var endDate = new Date(yyyy+1,mm-1,dd);
+	
+	$('#dateStart').datepicker('setStartDate', startDate);//'2012-09-25'
+	$('#dateStart').datepicker('setEndDate', endDate);
+	$('#dateStart')
+	    .datepicker()
+	    .on('changeDate', function(ev){
+	        if (ev.date.valueOf() > endDate.valueOf()){	        	
+	            $('#alert').show().text('The start date must be before the end date.');
+	        } else {
+	            $('#alert').hide();
+	            startDate = new Date(ev.date);
+	            //$('#date-start-display').text($('#dateStart').data('date'));
+	        }
+	        $('#dateStart').datepicker('hide');
+	    });
+	$('#dateEnd').datepicker('setStartDate', startDate);
+	$('#dateEnd').datepicker('setEndDate', null);
+	$('#dateEnd')
+	    .datepicker()
+	    .on('changeDate', function(ev){
+	        if (ev.date.valueOf() < startDate.valueOf()){	        	
+	            $('#alert').show().text('The end date must be after the start date.');
+	        } else {
+	            $('#alert').hide();
+	            endDate = new Date(ev.date);
+	            //$('#date-end-display').text($('#dateEnd').data('date'));
+	        }
+	        $('#dateEnd').datepicker('hide');
+	    });	
+	
+	function setTab(event){
+	  //alert("tab="+event.data.tab);
+	  $('#tab').val(event.data.tab);	    
+	  //alert(event.data.param2);
+	}
+
+	$('#t1').click({tab: "1", param2: "World"}, setTab);
+	$('#t2').click({tab: "2", param2: "World"}, setTab);
+	$('#t3').click({tab: "3", param2: "World"}, setTab);	
+	
+    $('#ConditionType').change(function() {	   
+	   var cId = $('#catalogPriceRuleId').val(); 
+	   var cType = $('#ConditionType').val();
+	   //alert(cType);
+	   if(cType != 0){
+		   //alert($('#link').val());
+		   $('#link').val("/backoffice/cprproductlist?opt="+cType); 	   
+	   //alert(cType);
+       } else {
+    	   alert('Please select a condition');
+       }
+	   /*   jsRoutes.controllers.backoffice.PriceRules.addCondition(cId).ajax({
+	       success: function(data) {
+	    	 //alert(data);	       	
+	       	 $("#conditions").html(data);	        
+	       },
+	       error: function() {
+	         alert("Error!");
+	       }
+	     }) */
+	 });
+    
+     $('.modal[data-color]').on('show hidden', function () {
+ 	   $('body').toggleClass('modal-color-'+ $(this).data('color'));
+ 	 });         
+     
+ 	 $("a[data-toggle=modal]").click(function (e) { 		 
+ 		var cType = $('#ConditionType').val();
+ 	    //alert('cType='+cType);
+ 	  
+ 	    lv_target = $(this).attr('data-target');
+ 	    //alert('lv_target='+lv_target);
+ 	    if(lv_target == '#conditionLoad' && cType == 0){
+		  alert('Please select a condition');
+		  return false;
+	    } 
+ 	    //alert(lv_target);
+ 	    if($(this).attr('href')=='#'){
+ 		  lv_url = $('#link').val();
+ 	    }else{
+ 		  lv_url = $(this).attr('href')+$('#catalogPriceRuleId').val();  
+ 	    } 	  
+ 	    //alert(lv_url); 	  
+ 	    $(lv_target).load(lv_url); 	 
+ 	 })
+ 	 
+ 	
+ 	function removethis(obj){
+ 		 $("#" + obj).remove();
+    }
+ 	 	
+ 	function addProd(id, opt) {
+		   //alert("addProd"+id);
+		   //alert("opt="+opt);
+		   if(opt=='Categories' && ($('#operator').val()=='=' || $('#operator').val()=='!=')){
+			   //alert(productList);
+			   if(productList!=''){
+			     alert('One record is already selected');
+			     return false;
+			   }
+		   }
+		   if(productList.indexOf(id)<0){
+		   productList.push(id);		   
+		   var prevProds = $("#prodsTbl").html();
+		   jsRoutes.controllers.backoffice.PriceRules.displaySelectedProduct(id, opt).ajax({
+			      success: function(data) {
+			    		data = prevProds+data;
+			        $("#prodsTbl").html(data);
+			      },
+			      error: function() {
+			        alert("Error!");
+			      }
+			    });
+		   }
+		   //alert("productList="+productList);	  
+	   }
+ 	
+ 	function remProd(id) {
+ 		productList.splice(productList.indexOf(id),1); 		
+ 		$("#tr_"+id).remove();
+ 		//alert("productList="+productList);
+	   }
+	</script>
+	
+}

@@ -1,0 +1,102 @@
+[
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73dde" },
+    "title":"Dark Brown Long Kiwi Shorts",
+    "description":"Everything we know about outdoor trousers, distilled into a more concise Kiwi! These slightly longer-length shorts are a great halfway house between our Kiwi Trousers and Active Shorts. All the same performance and protection you'd expect from Kiwi, but with the unrestricted freedom of movement that only shorts can deliver! Best for: Summer walking.",
+    "sku":"p01",
+    "price":35,
+    "image": ["50063cca9bde586765e73dde.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6cdd" }],
+    "relatedProducts": ["50063cca9bde586765e73ddc","50063cca9bde586765e73ddd","50063cca9bde586765e73de2"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73ddd" },
+    "title":"Vintage Hooded Top",
+    "description":"Men's Vintage Entry hood, with classic distressed chest print, large front pocket and sleeve logo tab.",
+    "sku":"p02",
+    "price":19.99,
+    "image": ["50063cca9bde586765e73ddd.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce2" }],
+    "relatedProducts": ["50063cca9bde586765e73ddc","50063cca9bde586765e73dde"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73ddc" },
+    "title":"Sperry Authentic Original Ranger Moc",
+    "description":"With over 75 years experience in making the Authentic Original Topsider boat shoe, Sperry have turned their attention to the traditional American Ranger mocassin. The shoe's hand-sewn tru-moc uppers are crafted from premium leather, with Sperry's signature razor-cut rubber sole complementing its classic looks.",
+    "sku":"p03",
+    "price":109,
+    "image": ["50063cca9bde586765e73ddc.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce3" }],
+    "relatedProducts": ["50063cca9bde586765e73ddb","50063cca9bde586765e73dde","50063cca9bde586765e73de2","50063cca9bde586765e73de3"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73ddb" },
+    "title":"Billionaire Boys Club Portfolio Chino",
+    "description":"The portfolio chino is a classic collegiate casual trouser made from a premium cotton twill, featuring authentic detailing such as as a front ticket pocket, horn effect button and madras check interior taping. The chinos are BBC's 'Smart Cut', for a great fit, and are subtly branded with signature Billionaire Boys Club astronaut logo embroidery.",
+    "sku":"p04",
+    "price":125,
+    "image": ["50063cca9bde586765e73ddb.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce4" }],
+    "relatedProducts": ["50063cca9bde586765e73ddc"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73de2" },
+    "title":"Dockers Alpha Khaki Pant",
+    "description":"One of America's most famous brands, Dockers are renowned for their high quality chinos that are an integral part of the country's fashion heritage. The Alpha Khaki an updated version of the classic San Francisco chino. A more modern cut of the American classic, slim, contemporary fitting with a taper at the ankle, but still retaining all the classic features.",
+    "sku":"p05",
+    "price":85,
+    "image": ["50063cca9bde586765e73de2.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce4" }],
+    "relatedProducts": ["50063cca9bde586765e73ddc","50063cca9bde586765e73ddd"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73de1" },
+    "title":"Mango Satin Sheen Dress, Alpine",
+    "description":"Simple chic from Mango. This stylish satine sheen dress is perfect for work or play. Designed with a v-neck, 3/4 length sleeves and a key hole back detail, it's feminine and fashionable. The shine finish adds a modern touch to this lovely piece.",
+    "sku":"p06",
+    "price":27.99,
+    "image": ["50063cca9bde586765e73de1.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce1" }],
+    "relatedProducts": ["50063cca9bde586765e73de0"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73de0" },
+    "title":"Gabor Equinox Mary Jane Leather Court Shoes, Black",
+    "description":"These Equinox court shoes by Gabor have a mid height 7cm cone heel and a Mary Jane cross strap and buckle. The black calf leather uppers and leather lining are supple and comfy, with vertical visible stitching decorating the front of the shoes.",
+    "sku":"p07",
+    "price":79.99,
+    "image": ["50063cca9bde586765e73de0.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6cdf" }],
+    "relatedProducts": ["50063cca9bde586765e73de4","50063cca9bde586765e73de1"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73ddf" }, 
+    "title":"Bow Vest, Deep Pink",
+    "description":"If your basics wardrobe needs some updating, look no further than this jersey vest top from kew.159. Crafted in a deep pink, it features frills at the shoulders and three delicate georgette bows at the neckline for a new twist on a classic style.",
+    "sku":"p08",
+    "price":26,
+    "image": ["50063cca9bde586765e73ddf.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6cdf" }],
+    "relatedProducts": ["50063cca9bde586765e73de4","50063cca9bde586765e73de0"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73de4" },
+    "title":"Planet Seam Detail Trousers, Navy",
+    "description":"These smart Planet trousers have a modern tailored shape, with feminine seaming details on the waistband, a fly and button front fastening, side slit pockets and back button flap pockets.",
+    "sku":"p09",
+    "price":99,
+    "image": ["50063cca9bde586765e73de4.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce5" }],
+    "relatedProducts": ["50063cca9bde586765e73ddf","50063cca9bde586765e73de0"]
+  },
+  {
+  	"_id": { "$oid" : "50063cca9bde586765e73de3" },
+    "title":"Carhartt Vicious Jean",
+    "description":"Classic American workwear brand Carhartt draws inspiration from its rich heritage, redefining classic styles with contemporary cuts whilst retaining the excellent quality and attention to detail. The Vicious Jean is made from 12oz rigid denim, with a Classic 5 Pocket Silhouette in a slim tapered fit with a slightly dropped crotch.",
+    "sku":"p10",
+    "price":59,
+    "image": ["50063cca9bde586765e73de3.jpg"],
+    "categories": [{ "$oid" : "5008130087f22b4ccd3c6ce4" }],
+    "relatedProducts": ["50063cca9bde586765e73ddc","50063cca9bde586765e73ddd"]
+  }
+]

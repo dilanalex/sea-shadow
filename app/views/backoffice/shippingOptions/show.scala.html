@@ -1,0 +1,278 @@
+@(tableRateForm: Form[ShippingTableRate], rateList: List[TableRate], customerGroups: List[CustomerGroup],chkCustomerGroups: List[String],countries: List[Country], chkCountries: List[String])(implicit request: RequestHeader,  flash: Flash, l: Lang=Lang("en"))
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text, classname: String, dataurl: String, condition: String) = {
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left;">
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id" name="@field.name" class="@classname"  
+         @if(dataurl != ""){data-url="@dataurl" onclick="autoComplete(this.id, '@condition')"} />
+      @if(dataurl != ""){
+      	<input  type="hidden" value="" id="hid_@field.id" name="hid_@field.name" />
+      }   
+    </div>
+    
+  </div>
+}
+
+@inputTxtArea(field: Field, label: String) = {  
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left;">
+    <div class="controls">
+      <textarea rows="2" id="@field.id"  name="@field.name" class="input-xlarge">@field.value</textarea>          
+    </div>
+  </div>  
+}
+
+@inputChkBox(field: Field, label: String) = { 
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left;">
+    <div class="controls">
+	  <input type="checkbox" id="@field.id" name="@field.name" value="true" @if(field.value.isDefined){ checked}/> 
+	 </div>
+  </div>
+}
+
+@informationGroup(field: Field, className: String = "profile") = {
+	<div class="twipsies well @className" >
+	    @input(field("country"), {Messages("backoffice.ship.tab2.country")}, 'text, "autocomplete span1", "/backoffice/countrylist", "country")
+	    @input(field("state"), {Messages("backoffice.ship.tab2.state")}, 'text, "span1", "/backoffice/statelist", "state")
+	    @input(field("zipCode"), {Messages("backoffice.ship.tab2.zip")}, 'text, "span1", "", "")
+	    @input(field("city"), {Messages("backoffice.ship.tab2.city")}, 'text, "span2", "", "")	    
+	    @input(field("minWeight"), {Messages("backoffice.ship.tab2.minweight")}, 'text, "span1", "", "")
+	    @input(field("maxWeight"), {Messages("backoffice.ship.tab2.maxweight")}, 'text, "span1", "", "")
+	    @input(field("minVolumn"), {Messages("backoffice.ship.tab2.minvol")}, 'text, "span1", "", "")
+	    @input(field("maxVolumn"), {Messages("backoffice.ship.tab2.maxvol")}, 'text, "span1", "", "")
+	    @input(field("minSubTotal"), {Messages("backoffice.ship.tab2.minsub")}, 'text, "span1", "", "")
+	    @input(field("maxSubTotal"), {Messages("backoffice.ship.tab2.maxsub")}, 'text, "span1", "", "")
+	    @input(field("minItems"), {Messages("backoffice.ship.tab2.minitem")}, 'text, "span1", "", "")	    
+	    @input(field("maxItems"), {Messages("backoffice.ship.tab2.maxitem")}, 'text, "span1", "", "")
+	    @input(field("rate"), {Messages("backoffice.ship.tab2.rate")}, 'text, "span1", "", "")
+	    <a class="removeProfile btn btn-danger pull-right"><i class="icon-minus icon-white"></i> Remove</a>	    
+	</div>	    
+}
+@cpanel({Messages("backoffice.ship.title")}, null) {
+	@if(tableRateForm.hasErrors) {	
+	  <div class="alert alert-error">
+	  	<p><strong></strong> Please fix all errors.<br/>(i.e: @tableRateForm.errors.head.message)</p>
+	  </div>	  
+	}
+    @if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+  	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+    @tableRateForm.globalError.map { error =>        
+	  <div class='row'>
+	    <div class="alert alert-error">@error.message</div>
+	  </div>        
+    }
+    
+    @form(action = controllers.backoffice.routes.ShippingOptions.save, 'class -> "form-vertical", 'id -> "tableRateForm", 'name -> "tableRateForm") {
+	
+		<div class="tabbable tabs-top">
+			<ul class="nav nav-tabs">
+     		<li class="active"><a data-toggle="tab" href="#lA">@{Messages("backoffice.ship.tab1")}</a></li>
+     		<li ><a data-toggle="tab" href="#lB">@{Messages("backoffice.ship.tab2")}</a></li>
+     		<li ><a data-toggle="tab" href="#lC">@{Messages("backoffice.ship.tab3")}</a></li>
+     		<li ><a data-toggle="tab" href="#lD">@{Messages("backoffice.ship.tab4")}</a></li>
+    	</ul>
+    	<div class="tab-content">
+    		<div id="lA" class="tab-pane active">
+    			<fieldset>
+				     <!-- legend>General Parameters</legend-->
+				     @input(tableRateForm("tabRateId"), "", 'hidden, "", "", "")				     
+				      <div class="row-fluid">
+    					<div class="span12">    						
+						   <div class="row-fluid">
+						     <div class="span6">@inputChkBox(tableRateForm("enableFrontFlag"), "")
+						     <strong>&nbsp;@{Messages("backoffice.ship.tab1.enablefront")}</strong><br/>
+							  	&nbsp;@{Messages("backoffice.ship.tab1.enablefront.desc")}<br/>							  							     
+						     </div>
+						     <div class="span6">@inputChkBox(tableRateForm("taxableFlag"), "") 
+						     <strong>&nbsp;@{Messages("backoffice.ship.tab1.taxable")}</strong><br/>
+							  	&nbsp;@{Messages("backoffice.ship.tab1.taxable.desc")}<br/>							  	  
+						     </div>
+						   </div>
+						   <div class="row-fluid">
+						     <div class="span6">@inputChkBox(tableRateForm("enableAdminFlag"), "")
+						     <strong>&nbsp;@{Messages("backoffice.ship.tab1.enableadmin")}</strong><br/>
+							  	&nbsp;@{Messages("backoffice.ship.tab1.enableadmin.desc")}<br/>							  	
+						     </div>
+						     <div class="span6">						       						     
+						     </div>
+						   </div>
+						   <div class="row-fluid">
+						   	 <div class="span6">
+						   	 <strong>@{Messages("backoffice.ship.tab1.name")}</strong><br/>
+		    					@{Messages("backoffice.ship.tab1.name.desc")}<br/>
+						        @inputText(tableRateForm("name"), '_label -> "")						     
+						     </div>
+						     <div class="span6">
+						   	 <strong>@{Messages("backoffice.ship.tab1.desc")}</strong><br/>
+		    				    @{Messages("backoffice.ship.tab1.desc.desc")}<br/>
+						        @inputTxtArea(tableRateForm("description"), "")					     
+						     </div>
+						   </div>						   
+						   <div class="row-fluid">
+						     <div class="span6">
+						     <strong>@{Messages("backoffice.ship.tab1.handling")}</strong><br/>
+		    				    @{Messages("backoffice.ship.tab1.handling.desc")}<br/>
+		    				    @inputText(tableRateForm("handlingFee"), '_label -> "")
+						     </div>
+						     <div class="span6">
+						     <strong>@{Messages("backoffice.ship.tab1.apicode")}</strong><br/>
+		    				    @{Messages("backoffice.ship.tab1.apicode.desc")}<br/>
+		    				    @inputText(tableRateForm("obcAPI"), '_label -> "")		    				    
+						     </div>
+						   </div>
+						   <div class="row-fluid">
+						     <div class="span6">
+						     <strong>@{Messages("backoffice.ship.tab1.minweight")}</strong><br/>
+		    				    @{Messages("backoffice.ship.tab1.minweight.desc")}<br/>
+		    				    @inputText(tableRateForm("minWeight"), '_label -> "")
+						     </div>
+						     <div class="span6">
+						     <strong>@{Messages("backoffice.ship.tab1.maxweight")}</strong><br/>
+		    				    @{Messages("backoffice.ship.tab1.maxweight.desc")}<br/>
+		    				    @inputText(tableRateForm("maxWeight"), '_label -> "")
+						     </div>
+						   </div>
+						</div>
+					  </div>
+				</fieldset>
+    		</div>
+    		<div id="lB" class="tab-pane ">
+        	<fieldset>			  
+			  <div class="well">	    
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.country")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.state")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.zip")}</b></div>
+				<div style="display: inline; float: left; width:170px;"><b>@{Messages("backoffice.ship.tab2.city")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.minweight")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.maxweight")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.minvol")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.maxvol")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.minsub")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.maxsub")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.minitem")}&nbsp;&nbsp;&nbsp;</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.maxitem")}&nbsp;&nbsp;</b></div>
+				<div style="display: inline; float: left; width:70px;"><b>@{Messages("backoffice.ship.tab2.rate")}</b></div>
+				<div style="display: inline; float: left; width:70px;"><b></b></div>
+			  </div>	    		
+			  <div id="profiles">
+				    @if(rateList.isEmpty) {					   
+							@informationGroup(tableRateForm("rate[0]"), className = "profile")
+  					} else {	  					
+  						 @rateList.map{ var x = 0; image=>
+				    	 	 @informationGroup(tableRateForm("rate["+x+"]"), className = "profile")
+				    	 	 @{x=x+1}
+				    	 }
+  					}
+  					@**
+                    * Keep an hidden block that will be used as template for Javascript copy code
+                    **@
+                    @informationGroup(
+                    tableRateForm("rate[x]"), className = "profile_template hidden"                    
+                	)			         
+			   </div>
+			   <div class="manage" align="right">
+	               <a class="addProfile btn btn-success">
+				     <i class="icon-plus icon-white"></i> More
+				   </a>
+	           </div>	 		
+		 	</fieldset>
+		 	</div>
+		 	<div id="lC" class="tab-pane ">
+		 		<fieldset>
+		 			<h4>@{Messages("backoffice.ship.tab3.head1")}</h4><br>
+		 			@{Messages("backoffice.ship.tab3.desc")}<br/>
+		 		
+		 			@customerGroups.map{var x = 0; customerGroup=>		 		
+		 		     <input type="checkbox"  id="visibility_@x" name="visibility_@x" value="@customerGroup.id"				
+				      @if(chkCustomerGroups.contains(customerGroup.id.toString)){ checked }/> @customerGroup.name <br/>				       
+				      @{x=x+1}	         
+				    }
+				        	 			
+		 		</fieldset>
+		 	</div>
+		 	<div id="lD" class="tab-pane ">
+		 		<fieldset>		 			
+		 			<h4>@{Messages("backoffice.ship.tab4.head1")}</h4><br>
+		 			@{Messages("backoffice.ship.tab4.desc")}<br/>
+		 			
+		 			@countries.map{var x = 0; countries=>		 			
+		 			  <input type="checkbox"  id="country_@x" name="country_@x" value="@countries.id"
+		 			   @if(chkCountries.contains(countries.id.toString)){ checked }/> @countries.name <br/>       				
+       				   @{x=x+1}       				 
+      				}
+		 			
+		 		</fieldset>
+		 	</div>
+    	</div>
+		</div>
+		<div class="form-actions">
+		    <input type="submit" class="btn btn-primary" value="Save">
+		    <a class="btn btn-primary" id="Back" href="@controllers.backoffice.routes.ShippingOptions.list">Cancel</a> 
+		    @if(!rateList.isEmpty){
+			    <div style="float:right"><a class="btn btn-danger" href="#@tableRateForm("tabRateId").value" data-toggle="modal"><i class="icon-trash icon-white"></i> Delete</a></div>
+		    	<div class="modal hide" id="@tableRateForm("tabRateId").value">	       
+		    		<div class="modal-body"><p>Do you really want to delete this Table Rate?</p></div>
+		    	    <div class="modal-footer">
+		    			<a href="#" class="btn" data-dismiss="modal">No</a>
+		    			<a href="@controllers.backoffice.routes.ShippingOptions.delete(new ObjectId(tableRateForm("tabRateId").value.get))" class="btn btn-primary">Yes</a>
+		    	    </div>
+	    	    </div>
+    	    }	 		    
+		</div>
+	}
+	
+	<script type="text/javascript" charset="utf-8">
+	  $('.removeProfile').live('click', function(e) {		  
+	     $(this).parents('.profile').remove()	     
+	     renumber()
+	  })
+	  $('.addProfile').live('click', function(e) {
+	    var template = $('.profile_template')
+	    var templatehtml = template.html().replace(/value="([^\\"\^true]|\\")*"/g,'value=""')
+	    template.after('<div class="twipsies well profile">' + templatehtml + '</div>')
+	    renumber()
+		})
+		var renumber = function() {
+	    $('.profile').each(function(i) {	    	
+	        $('input', this).each(function() {
+	            $(this).attr('name', $(this).attr('name').replace(/rate\[.+?\]/g, 'rate[' + i + ']'));
+	            $(this).attr('id', $(this).attr('id').replace(/rate\_.+?\_/g, 'rate_' + i + '_'));	            
+	        })
+	    })
+		}
+	  function autoComplete(id, condition){
+		  if(condition == "country"){
+			  $(("#"+id)).each( function() {
+				  var $input = $(this);
+				  var serverUrl = $input.data('url');
+				  $input.autocomplete({
+				   source:serverUrl,
+				   select: function(event, ui) {
+				   	$("#hid_"+id).val(ui.item.cid);
+				   }
+				 });
+				}); 
+		  }else if(condition == "state"){
+			  $(("#"+id)).each( function() {
+				  var $input = $(this);
+				  var serverUrl = $input.data('url')+"?cid="+	
+						  $("#hid_"+id.replace("state","country")).val();
+				  if($("#hid_"+id.replace("state","country")).val() == ""){
+					  serverUrl = [{"label":"* - Any state","value":"*"}]
+				  }
+				  $input.autocomplete({
+				   source:serverUrl,
+				   highlight: true
+				 });
+				});   
+		  }
+	  }
+	</script>
+	
+}

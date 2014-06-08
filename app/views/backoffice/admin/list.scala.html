@@ -1,0 +1,34 @@
+@(admin : Admin)(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+ 
+@handleYesNo(value:Boolean)={
+	@if(value==true){Yes} else {No}
+}
+
+@cpanel({Messages("backoffice.admin.head1")}, admin) {
+
+	
+	<h2>@{Messages("backoffice.admin.head1")}</h2>
+	<br>
+	
+	<table class="table">
+		<tr><td>
+			<li><a href="/backoffice/products">Setup Products</a></li>
+	        <li><a href="/backoffice/countries">Setup Country/States</a></li>
+	        <li><a href="/backoffice/currencies">Setup Currency</a></li>
+	        <li><a href="/backoffice/tax">Tax Setup</a></li>			                    
+	        <li><a href="/backoffice/shippingopt">Setup Shipping Options</a></li>
+	        <li><a href="/backoffice/catalogpricerules">Catalog Price Rules</a></li>
+	        <li><a href="/backoffice/productupload">Upload Products</a></li>
+	        @if(admin.adminType == "SUPER"){
+	        	<li><a href="/backoffice/listusers">Create Users</a></li>	
+	        }
+	        <li><a href="/backoffice/reports">Reports</a></li>
+	        <li><a href="/backoffice/orderprocess">Process Orders</a></li>
+        </td></tr>
+ 	</table>	
+
+}

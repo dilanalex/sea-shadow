@@ -1,0 +1,482 @@
+@(currentPage: helpers.Page[(models.Product)], currentPageT: helpers.Page[(models.Taxonomy)], currentOrderBy: Int, currentFilter: String, opt: String, op: String, tr: String, ruleCondition: models.RuleCondition)(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+    controllers.backoffice.routes.PriceRules.listproducts(newPage, newOrderBy.map { orderBy =>
+        if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+    }.getOrElse(currentOrderBy), currentFilter, "Product")
+}
+<div style="width: 550px;" id="maindiv">
+@header(orderBy: Int, title: String) = {
+    <th class="">
+        <!-- a href="@link(0, Some(orderBy))">@title</a-->
+        <a href="#">@title</a>
+    </th>
+}
+
+	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	
+	<div class="modal-header">
+	  <button type="button" class="close" data-backdrop="true" data-dismiss="modal" aria-hidden="true">&times;</button>
+	  <h3>Product attribute condition</h3>
+	</div>      
+   
+	@if(opt=="Product" || ruleCondition.attribute=="Product"){
+	
+	<table>
+	  <thead>
+	    <tr>
+	      <th>Attribute</th>
+	      <th>Opperator</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td><select id="attribute" name="attribute" onchange="changeOption();">
+	          @for(a <- AttributesOperators.attributes) {
+	            @if(a._1 == opt || a._1 == ruleCondition.attribute){
+	              <option value="@a._1" selected="selected">@a._2</option>
+	            }else{
+		  		  <option value="@a._1">@a._2</option>
+		  		}					  
+		  	  }
+	          </select>
+	      </td>
+	      <td><select id="operator" name="operator">
+	          @for(o <- AttributesOperators.productOperators) {
+	            @if(o._1 == op || o._1 == ruleCondition.operator.get){
+		  		  <option value="@o._1" selected="selected">@o._2</option>
+		  		}else{
+		  		  <option value="@o._1">@o._2</option>
+		  		}					  
+		  	  }
+	        </select>
+	      </td>
+	    </tr>	  
+	  </tbody>				  
+	</table>
+	<div id="actions" style="margin-left: 5px;">
+	    <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by product name...">
+	    <input type="button" id="searchsubmit" value="Filter by name" class="btn btn-primary" onclick="filterProducts('Product')">
+    </div>
+  
+ 	@Option(currentPage.items).filterNot(_.isEmpty).map { products =>
+ 	<table class="table" style="margin-left: 5px;">
+	    <thead>
+	      <tr>
+	        <th style="width: 1%">&nbsp;</th>
+	        <!--th style="width: 1%">&nbsp;</th-->
+	        @header(1, "Name")
+	        @header(2, "SKU")
+	        @header(3, "Price")
+	        <td></td>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      @products.map {	       
+	       case (product) => { 
+	          <tr id="@product.id">
+	          	<td style="width: 1%">
+	          		<button id="bAdd@product.id" class="btn btn-mini btn-success" type="button" onClick="addProd('@product.id','Product')"><i class="icon-plus-sign icon-white"></i></button>
+	          	</td>
+	          	<!--td style="width: 1%">
+	          		<input type="checkbox" name="chk_prod" value="@product.sku" id="chk_prod" />
+	          	</td-->
+	            <td class="current" style="width: 70%">
+	            	@product.title
+	           	</td>
+	            <td style="width: 8%">
+	            	@product.sku
+	            </td>
+	            <td style="width: 4%">
+	            	@product.price
+	            </td>
+	          </tr>
+	          
+	        }
+	        
+	      }
+	    </tbody>
+  	</table>
+  	
+		<div id="pagination" class="pagination" style="margin-left: 5px;">
+	    <ul>
+	      @currentPage.prev.map { page =>
+	        <li class="prev">
+	            <a href="#" onclick="comeprevious(@page,'Product')">&larr; Previous</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="prev disabled">
+	            <a>&larr; Previous</a>
+	        </li>
+	      }
+	      <li class="current">
+	      	<a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + products.size) of @currentPage.total</a>
+	      </li>
+	      @currentPage.next.map { page =>
+	        <li class="next">
+	            <a href="#" onclick="gonext(@page,'Product')">Next &rarr;</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="next disabled">
+	            <a>Next &rarr;</a>
+	        </li>
+	      }
+	    </ul>
+		</div>
+		
+		  
+  	
+ 	}.getOrElse {
+	  <div class="well">
+	      <em>Nothing to display</em>
+	  </div>
+	}
+	    <b> Selected Records</b><br/>
+	    <div id="selectedProducts" style="overflow: scroll; height: 120px;">
+		  <table id="prodsTbl" class="table" style="margin-left: 5px; width: 98%;">
+		  	 @ruleCondition.products.map {var x = 0;var productFromDB= new Product; row =>		    	    
+               <tr id="tr_@row._1">
+    		     <td style="width: 2%">
+    		       <button id="@row._1" class="btn btn-mini btn-danger" type="button" onClick="remProd('@row._1');"><i class='icon-minus-sign icon-white'></i></button>
+    		     </td>
+    		     <td style="width: 60%">@row._2</td>
+    		   </tr>    		   
+			}		   		  
+		  </table>
+		</div>
+		<div class="modal-footer" style="width: 530px;">		  
+		  <a href="#" class="btn" data-dismiss="modal" onclick="closeClicked1()">Close</a>
+		  <a href="#" class="btn btn-success" onclick="prodSelect('@tr','@ruleCondition.id')">Add Selected</a>  
+		</div>
+	
+	
+	
+	
+	} else {	
+	  @if(opt=="Categories" || ruleCondition.attribute=="Categories"){	  
+	  <table>
+	  <thead>
+	    <tr>
+	      <th>Attribute</th>
+	      <th>Opperator</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td><select id="attribute" name="attribute" onchange="changeOption();">
+	          @for(a <- AttributesOperators.attributes) {
+	            @if(a._1 == opt || a._1 == ruleCondition.attribute){
+	              <option value="@a._1" selected="selected">@a._2</option>
+	            }else{
+		  		  <option value="@a._1">@a._2</option>
+		  		}					  
+		  	  }
+	          </select>
+	      </td>
+	      <td><select id="operator" name="operator" onchange="clearRecords();">
+	          @for(o <- AttributesOperators.categoryOperators) {
+	            @if(o._1 == op || o._1 == ruleCondition.operator.get){
+		  		  <option value="@o._1" selected="selected">@o._2</option>
+		  		}else{
+		  		  <option value="@o._1">@o._2</option>
+		  		}					  
+		  	  }
+	        </select>
+	      </td>
+	    </tr>	  
+	  </tbody>				  
+	</table>
+	<div id="actions" style="margin-left: 5px;">
+	    <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by catagory...">
+	    <input type="button" id="searchsubmit" value="Filter by name" class="btn btn-primary" onclick="filterProducts('Categories')">
+    </div>
+  
+ 	@Option(currentPageT.items).filterNot(_.isEmpty).map { catagories =>
+ 	<table class="table" style="margin-left: 5px;">
+	    <thead>
+	      <tr>
+	        <th style="width: 1%">&nbsp;</th>	        
+	        @header(1, "Name")	        
+	        <td></td>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      @catagories.map {	       
+	       case (catagory) => { 
+	          <tr id="@catagory.id">
+	          	<td style="width: 1%">
+	          		<button id="bAdd@catagory.id" class="btn btn-mini btn-success" type="button" onClick="addProd('@catagory.id','Categories')"><i class="icon-plus-sign icon-white"></i></button>
+	          	</td>	          	
+	            <td class="current" style="width: 99%">
+	            	@catagory.name
+	           	</td>	            
+	          </tr>
+	          
+	        }
+	        
+	      }
+	    </tbody>
+  	</table>
+  	
+		<div id="pagination" class="pagination" style="margin-left: 5px;">
+	    <ul>
+	      @currentPageT.prev.map { page =>
+	        <li class="prev">
+	            <a href="#" onclick="comeprevious(@page,'Categories')">&larr; Previous</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="prev disabled">
+	            <a>&larr; Previous</a>
+	        </li>
+	      }
+	      <li class="current">
+	      	<a>Displaying @(currentPageT.offset + 1) to @(currentPageT.offset + catagories.size) of @currentPageT.total</a>
+	      </li>
+	      @currentPageT.next.map { page =>
+	        <li class="next">
+	            <a href="#" onclick="gonext(@page,'Categories')">Next &rarr;</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="next disabled">
+	            <a>Next &rarr;</a>
+	        </li>
+	      }
+	    </ul>
+		</div>
+		
+		  
+  	
+ 	}.getOrElse {
+	  <div class="well">
+	      <em>Nothing to display</em>
+	  </div>
+	}
+	    <b> Selected Records</b><br/>
+	    <div id="selectedProducts" style="overflow: scroll; height: 120px;">
+		  <table id="prodsTbl" class="table" style="margin-left: 5px; width: 98%;">
+		  	 @ruleCondition.products.map {var x = 0;var productFromDB= new Product; row =>		    	    
+               <tr id="tr_@row._1">
+    		     <td style="width: 2%">
+    		       <button id="@row._1" class="btn btn-mini btn-danger" type="button" onClick="remProd('@row._1');"><i class='icon-minus-sign icon-white'></i></button>
+    		     </td>
+    		     <td style="width: 60%">@row._2</td>
+    		   </tr>    		   
+			}		   		  
+		  </table>
+		</div>
+		<div class="modal-footer" style="width: 530px;">		  
+		  <a href="#" class="btn" data-dismiss="modal" onclick="closeClicked1()">Close</a>
+		  <a href="#" class="btn btn-success" onclick="prodSelect('@tr','@ruleCondition.id')">Add Selected</a>  
+		</div>
+		
+	   
+	  } else {
+		  
+		<table>
+		  <thead>
+		    <tr>
+		      <th>Attribute</th>
+		      <th>Opperator</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td><select id="attribute" name="attribute" onchange="changeOption();">
+		          @for(a <- AttributesOperators.attributes) {
+		            @if(a._1 == opt || a._1 == ruleCondition.attribute){
+		              <option value="@a._1" selected="selected">@a._2</option>
+		            }else{
+			  		  <option value="@a._1">@a._2</option>
+			  		}					  
+			  	  }
+		          </select>
+		      </td>
+		      <td><select id="operator" name="operator">
+		          @for(o <- AttributesOperators.operators) {
+		            @if(o._1 == op || o._1 == ruleCondition.operator.get){
+			  		  <option value="@o._1" selected="selected">@o._2</option>
+			  		}else{
+			  		  <option value="@o._1">@o._2</option>
+			  		}					  
+			  	  }
+		        </select>
+		      </td>
+		    </tr>
+		  <thead>
+		    <tr>
+		      <th>Value</th>
+		    </tr>
+		  </thead>
+		  <tr>
+		    <td><input name="attrValue" id="attrValue" type="text" value="@ruleCondition.cvalue.get"/></td>
+		  </tr>
+		    </tbody>				  
+		</table>
+	    <div class="modal-footer" style="width: 530px;">		  
+		  <a href="#" class="btn" data-dismiss="modal" onclick="closeClicked1()">Close</a>
+		  <a href="#" class="btn btn-success" onclick="addCondition('@tr','@ruleCondition.id')">Add Selected</a>  
+		</div>
+	  }
+	}
+	
+	<script type="text/javascript">
+		
+		//Pagination next button call in pop up
+	  function gonext(page, opt) {
+	    jsRoutes.controllers.backoffice.PriceRules.listproducts((page),1,$("#searchbox").val(), opt,"","","","@tr").ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      fillSelectedProducts(opt);
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+	  }
+		//Pagination previous button call in pop up
+	  function comeprevious(page, opt) {
+	    jsRoutes.controllers.backoffice.PriceRules.listproducts((page),1,$("#searchbox").val(), opt,"","","","@tr").ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      fillSelectedProducts(opt);
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+		}
+		//Filtering products in pop up : Search products
+	  function filterProducts(opt) {
+	    jsRoutes.controllers.backoffice.PriceRules.listproducts(0,1,$("#searchbox").val(), opt,"","","","@tr").ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      fillSelectedProducts(opt);
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+    }
+	 	  
+	  values = new Array();
+	  dataOnPage = $("#rulelist").html();
+	  startIndex = 0;
+	  	  
+	   @ruleCondition.products.map {var x = 0;var productFromDB= new Product; row =>
+	     if(productList.indexOf('@row._1')<0){
+	         productList.push('@row._1');
+		 }
+	   }
+	  	   
+	   function fillSelectedProducts(opt) {		   
+		   var prevProds = $("#prodsTbl").html();
+		   jsRoutes.controllers.backoffice.PriceRules.displaySelectedProducts(productList.toString(), opt).ajax({
+			      success: function(data) {
+			    		data = prevProds+data;
+			        $("#prodsTbl").html(data);
+			      },
+			      error: function() {
+			        alert("Error!");
+			      }
+			    });		  
+	   }
+	  
+	  function prodSelect(tr,id){
+		  //alert(tr);
+		  //alert(id);
+		  jsRoutes.controllers.backoffice.PriceRules.selectedProducts(productList.toString(), $('#rulelist li').length, $('#attribute').val(), $('#operator').val(), tr.toString(), id.toString()).ajax({
+	      success: function(data) {
+	    	//startIndex=$('#rulelist tr').length
+	    	//alert(startIndex)
+	    	
+	    	if(tr.toString() == ""){
+	    	  //data = dataOnPage + data;
+	          $("#rulelist").html(dataOnPage + data);
+	          closeClicked2();
+			  closeClicked1();
+	        } else {
+	          $("#"+tr.toString()).html(data);
+	          closeClicked3();
+	        }			
+	      },
+	      error: function() {
+	        alert("Please select record(s) to create the condition!");
+	      }
+	    });
+		  productList = [];		  
+	  }
+	  
+	  function addCondition(tr,id){
+		  //alert(tr);
+		  //alert(id);
+		  if($('#attrValue').val()==''){
+		    alert('Please enter a value');
+			return false;
+		  }
+			  
+		  jsRoutes.controllers.backoffice.PriceRules.addConditionSet($('#rulelist li').length, $('#attribute').val(), $('#operator').val(), $('#attrValue').val(), tr.toString(), id.toString()).ajax({
+	      success: function(data) {
+	    	//startIndex=$('#rulelist tr').length
+	    	//alert(startIndex)
+	    	
+	    	if(tr.toString() == ""){
+	    		//alert('dataOnPage='+dataOnPage);
+	    	  //data = dataOnPage + data;
+	          $("#rulelist").html(dataOnPage + data);
+	          closeClicked2();
+			  closeClicked1();
+	        } else {
+	          $("#"+tr.toString()).html(data);
+	          closeClicked3();
+	        }			
+	      },
+	      error: function() {
+	        alert("Error");
+	      }
+	    });
+		  productList = [];		  
+	  }
+	  
+	  //This is called when close button called.
+	  //Renuber is called with this event because--
+	  //prodSelect() function get related products using AJAX (Issue with AJAX call)
+	  
+	  function closeClicked1(){
+		  $('#conditionSelect').modal('hide');
+	  }
+	  
+	  function closeClicked2(){
+		  $('#conditionLoad').modal('hide');
+	  }
+	  
+	  function closeClicked3(){
+		  $('#conditionLoadEdit').modal('hide');
+	  }
+	  
+	  function clearRecords(){
+		  productList = [];
+		  $("#prodsTbl").html("");
+	  }
+	  
+	  function changeOption(){
+		  productList = [];
+		  jsRoutes.controllers.backoffice.PriceRules.listproducts(0,1,"", $('#attribute').val(),"","","","@tr").ajax({
+		      success: function(data) {
+		      $("#maindiv").html(data);		      
+		      },
+		      error: function() {
+		        alert("Error!");
+		      }
+		    })		  
+	  }
+	</script>
+	</div>

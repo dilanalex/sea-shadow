@@ -1,0 +1,75 @@
+@(title: String, user :UserX=null)(content: Html)(implicit request: RequestHeader, lang: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>TEssssssst</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("css/bootstrap.min.css")">
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("css/bootstrap-responsive.min.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <script type="text/javascript" charset="utf-8" src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" ></script>
+  </head>
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="@routes.ApplicationX.index">Restgate Commerce</a>		  
+   		  <div class="nav-collapse">
+            <ul class="nav">
+              <li><a href="@routes.ApplicationX.index">@{Messages("home")}</a></li>
+              <li><a href="@routes.Products.index">@{Messages("products")}</a></li>
+              <li><a href="@routes.Cart.show">@{Messages("cart")}</a></li>
+            </ul>
+          </div>
+          
+          <div class="btn-group pull-right">
+          	 @if(request.session.get("email")==null||request.session.get("email")==None){
+				
+				<ul class="nav">				
+					 <li><a href="@routes.Register.index">@{Messages("home.new.customer")}</a></li>
+					 <li class="divider-vertical"></li>
+					 <li><a href="@routes.ApplicationX.login">@{Messages("home.have.account")}</a></li>
+				</ul>
+          	
+          	  }else{
+	          	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+	              <i class="icon-user"></i>  @request.session.get("email") <span class="caret"></span>
+	            </a>
+	            <ul class="dropdown-menu">              
+	              <li><a href="@routes.ProfileX.view">@{Messages("home.main.profile.lbl")}</a></li>
+	              <li class="divider"></li>
+	              <li><a href="@routes.Orders.list">@{Messages("home.main.orders.lbl")}</a></li>
+	              <li class="divider"></li>
+	              <li><a href="@routes.ApplicationX.logout">@{Messages("home.main.signout.lbl")}</a></li>
+	            </ul>
+          	  }
+            
+          </div>                  
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      @content  
+      <hr>
+      <footer>
+        <p>&copy; Restgate Commerce 2014</p>
+      </footer>
+    
+    </div>
+    
+    
+    <!-- JS at the end for page loading speed -->
+    
+    <script type="text/javascript" charset="utf-8" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
+    
+    
+  </body>
+</html>

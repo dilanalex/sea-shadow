@@ -1,0 +1,224 @@
+@(user: securesocial.core.SocialUser, orderForm: Form[models.Order])(implicit request: RequestHeader, flash: Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+    </div>
+  </div>
+  
+}
+
+@select(field: Field, label: String) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+       <select id="@field.id" name="@field.name">       
+       	<option class="blank" value="" >@{Messages("cart.checkout.complete.sel.country")}</option> 	
+      		
+				@for(s <- Country.countriesAct) {
+				  @if(field.value.getOrElse("").equalsIgnoreCase(s.code)){
+						<option value="@s.code" selected="selected">@s.name</option>
+					} else {
+						<option value="@s.code">@s.name</option>
+					}				
+				} 
+			     	
+       </select>  
+              
+     
+      @if(field.hasErrors){
+      
+        <span class="help-inline">@Messages(field.error.head.message)</span>
+        
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@inputReadOnly(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input readonly="readonly" type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){
+        
+        <span class="help-inline">@Messages(field.error.head.message)</span>
+        
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@inputError(field: Field) = {
+
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+     
+      @if(field.hasErrors){      
+       
+        <span class="help-inline">@Messages(field.error.head.message)</span>  
+              
+      }
+      
+    </div>
+  </div>
+  
+}
+
+@main("Checkout Details", user) {
+	   <legend>@{Messages("cart.checkout.heading")}</legend>
+	   @form(action = routes.OrderCheckOut.submit, 'class -> "form-horizontal", 'id -> "formtwo", 'name -> "formtwo") {
+	    <fieldset>    
+	   
+	    @{Messages("cart.checkout.subheading")}
+			@input(orderForm("shipAddresses.firstName"), {Messages("cart.checkout.fname.lbl")}, 'text)
+	        @input(orderForm("shipAddresses.lastName"), {Messages("cart.checkout.sname.lbl")}, 'text) 
+	        @input(orderForm("shipAddresses.addLine1"), {Messages("cart.checkout.adr1.lbl")}, 'text)
+	        @input(orderForm("shipAddresses.addLine2"), {Messages("cart.checkout.adr2.lbl")}, 'text) 
+	        @input(orderForm("shipAddresses.city"), {Messages("cart.checkout.city.lbl")}, 'text)
+	        @input(orderForm("shipAddresses.postCode"), {Messages("cart.checkout.pcode.lbl")}, 'text)                         
+	        @select(orderForm("shipAddresses.country"), {Messages("cart.checkout.country.lbl")})
+	        
+	        <div class="control-group">
+				    <label class="control-label">State</label>
+				    <input type="hidden"  id="shipState"  name="shipState" value="@orderForm("shipAddresses.state").value"/>				    
+				    <div class="controls">
+				       <select id="@orderForm("shipAddresses.state").id" name="@orderForm("shipAddresses.state").name">
+				       	<option class="blank" value="" >--Select State--</option>
+				       </select>  
+				    </div>
+				  </div>
+	          
+	   
+	    @{Messages("cart.checkout.subheading2")}
+	    <label class="checkbox">
+			<input type="checkbox" value="Y" name="copyDelAddr" id="copyDelAddr" onchange="copyDeliveryAddr();">
+			@{Messages("cart.checkout.subheading3")}
+		</label>    
+	    	
+	    	@input(orderForm("billAddresses.addLine1"), {Messages("cart.checkout.adr1.lbl")}, 'text)
+	        @input(orderForm("billAddresses.addLine2"), {Messages("cart.checkout.adr2.lbl")}, 'text) 
+	        @input(orderForm("billAddresses.city"), {Messages("cart.checkout.city.lbl")}, 'text)
+	        @input(orderForm("billAddresses.postCode"), {Messages("cart.checkout.pcode.lbl")}, 'text) 				            
+	        @select(orderForm("billAddresses.country"), {Messages("cart.checkout.country.lbl")})
+	        <div class="control-group">
+				    <label class="control-label">State</label>
+				     <input type="hidden"  id="billState"  name="billState" value="@orderForm("billAddresses.state").value"/>
+				    <div class="controls">
+				       <select id="@orderForm("billAddresses.state").id" name="@orderForm("billAddresses.state").name">
+				       	<option class="blank" value="" >--Select State--</option>
+				       </select>  
+				    </div>
+				  </div>
+				  
+			</fieldset> 
+	        <div class="form-actions">
+	          <input type="submit" name="purchase" id="purchase" class="btn btn-success" value="Next >>"/>
+	        </div>
+	}
+	
+	<script type="text/javascript" charset="utf-8">
+		    
+	    	function copyDeliveryAddr(){
+			   if (document.getElementById("copyDelAddr").checked) {	      
+		         document.getElementById("billAddresses_addLine1").value=document.getElementById("shipAddresses_addLine1").value;
+		         document.getElementById("billAddresses_addLine2").value=document.getElementById("shipAddresses_addLine2").value;
+		         document.getElementById("billAddresses_city").value=document.getElementById("shipAddresses_city").value;
+		         document.getElementById("billAddresses_postCode").value=document.getElementById("shipAddresses_postCode").value;
+		         index=selectOption();	       
+		         document.getElementById("billAddresses_country").options[index].selected=true;
+		         document.getElementById("billAddresses_state").options[index].selected=true;	
+			   } else {	   	
+			     document.getElementById("billAddresses_addLine1").value="";
+		         document.getElementById("billAddresses_addLine2").value="";
+		         document.getElementById("billAddresses_city").value="";
+		         document.getElementById("billAddresses_postCode").value="";
+		         document.getElementById("billAddresses_country").options[0].selected=true;
+		         document.getElementById("billAddresses_state").options[0].selected=true;
+			   }	   
+		    }
+	    
+		    function selectOption() {
+		   	  var selObj = document.getElementById('shipAddresses_country');
+		   	  var selIndex = selObj.selectedIndex;
+		   	  return selIndex;
+			}
+		    		    
+		    var chgStatesShipping = function() {
+		       var csId = $('#shipAddresses_country').val();
+			     jsRoutes.controllers.backoffice.States.getCountryStateList(csId).ajax({
+			       success: function(data) {
+			       	var stateshere = eval('(' + data + ')');
+			       	$('#shipAddresses_state').find('option').remove();
+			       	var default_opt = true;
+			       	for (i=0; i<stateshere.states.length; i++){
+		       		  if(stateshere.states[i].code!=$('#shipState').val()){
+		       	        $('#shipAddresses_state').append( new Option(stateshere.states[i].name,stateshere.states[i].code) );
+		       		  }else{
+		       		    $('#shipAddresses_state').append( new Option(stateshere.states[i].name,stateshere.states[i].code, true, true) );	
+		       		  }
+		       		  default_opt = false;
+			       	}
+			       	if(default_opt)
+			       		$('#shipAddresses_state').append( new Option("-","*") );
+			       },
+			       error: function() {
+			         alert("Error!")
+			       }
+			     })
+			   };
+			  
+			   $('#shipAddresses_country').change(chgStatesShipping);			   
+			   
+			   var chgStatesBilling = function() {
+				   var cbId = $('#billAddresses_country').val();
+				     jsRoutes.controllers.backoffice.States.getCountryStateList(cbId).ajax({
+				       success: function(data) {
+				       	var stateshere = eval('(' + data + ')');
+				       	$('#billAddresses_state').find('option').remove();
+				       	var default_opt = true;
+				       	for (i=0; i<stateshere.states.length; i++){				       	  
+				       		if(stateshere.states[i].code!=$('#billState').val()){
+				       	      $('#billAddresses_state').append( new Option(stateshere.states[i].name,stateshere.states[i].code) );
+				       		}else{
+				       		  $('#billAddresses_state').append( new Option(stateshere.states[i].name,stateshere.states[i].code, true, true) );	
+				       		}
+				       		default_opt = false;
+				       	}
+				       	if(default_opt)
+				       		$('#billAddresses_state').append( new Option("-","*") );
+				       },
+				       error: function() {
+				         alert("Error!")
+				       }
+				     })
+				   };
+				   $('#billAddresses_country').change(chgStatesBilling);
+				   				   
+				   if($('#shipAddresses_country').val() != "")
+				   chgStatesShipping();
+				   if($('#billAddresses_country').val() != "")
+				   chgStatesBilling();
+		   
+	    </script>
+
+}

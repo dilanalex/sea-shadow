@@ -1,0 +1,47 @@
+[
+    {
+        "_id": {
+            "$oid": "503eff58efbb5b0038000003"
+        },
+        "name": "Guest",
+        "description": "Group is for guests",
+        "disableTaxInclusive": true,
+        "taxExempt": true
+    },
+    {
+        "_id": {
+            "$oid": "503f0498efbb5b0038000009"
+        },
+        "name": "Reseller",
+        "description": "Group is for resellers ",
+        "disableTaxInclusive": true,
+        "taxExempt": true
+    },
+    {
+        "_id": {
+            "$oid": "503f0497efbb5b0038000008"
+        },
+        "name": "Registered",
+        "description": "Group is for registered customers",
+        "disableTaxInclusive": true,
+        "taxExempt": true
+    },
+    {
+        "_id": {
+            "$oid": "503f0499efbb5b003800000a"
+        },
+        "name": "Retail",
+        "description": "Group is for retail customers ",
+        "disableTaxInclusive": true,
+        "taxExempt": true
+    },
+    {
+        "_id": {
+            "$oid": "503f049cefbb5b003800000b"
+        },
+        "name": "Wholesale",
+        "description": "Group is for wholesale customers ",
+        "disableTaxInclusive": true,
+        "taxExempt": true
+    }
+ ]

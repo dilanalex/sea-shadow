@@ -1,0 +1,98 @@
+@(title: String, user: Admin, metakeywords : String="", metaDesc : String="")(content: Html)(implicit request: RequestHeader = null, lang: Lang = Lang("en"))
+@import play.api.i18n._
+@import views.html.helper._
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>  
+              
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="keywords" content="@metakeywords" />
+      <meta name="description" content="@metaDesc" />
+    	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("css/bootstrap.min.css")">
+    	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("css/bootstrap-responsive.min.css")">
+    	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/jquery-ui-auto-complete.css")">
+    	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    	<script type="text/javascript" charset="utf-8" src="@routes.Assets.at("javascripts/jquery-1.8.2.min.js")" ></script>    
+    	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>	
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="@routes.Application.index">Restgate Commerce</a>
+                    <div class="nav-collapse">
+			            <ul class="nav">
+			              <li><a href="javascript: void(0)">@{Messages("home")}</a></li>
+			              <li><a href="javascript: void(0)">@{Messages("products")}</a></li>
+			              <li><a href="javascript: void(0)">@{Messages("cart")}</a></li>
+			              
+			              <!-- li>
+			              	<div class="btn-group">			              
+                			  <button data-toggle="dropdown" class="btn btn-inverse dropdown-toggle">Back-office <span class="caret"></span></button>
+                              <ul class="dropdown-menu">
+			                    <li><a href="/backoffice/products">Setup Products</a></li>
+			                    <li><a href="/backoffice/countries">Setup Country/States</a></li>
+			                    <li><a href="/backoffice/currencies">Setup Currency</a></li>
+			                    <li><a href="/backoffice/tax">Tax Setup</a></li>			                    
+			                    <li><a href="/backoffice/shippingopt">Setup Shipping Options</a></li>
+			                    <li><a href="/backoffice/catalogpricerules">Catalog Price Rules</a></li>
+			                    <li><a href="/backoffice/productupload">Upload Products</a></li>			                    
+			                    <li><a href="/backoffice/reports">Reports</a></li>
+                			  </ul>
+              				</div>
+              			 </li-->
+              			 <li>
+              			   <div class="btn-group">              			 
+              			     <select class="input-medium" id="selCurrency" name="selCurrency" disabled="disabled">       						       		
+							    @for(s <- Currency.activeCurrencies) {
+							      @if(request.session.get("setCurrency").getOrElse("").equals("")){							      
+							      	@if(Currency.baseCurrency.iso.equals(s.iso)){
+								      <option value="@s.iso" selected>@s.name</option>	
+								    } else {
+								      <option value="@s.iso">@s.name</option>
+								    }
+							     }else{							      
+							      	@if(request.session.get("setCurrency").getOrElse("").equals(s.iso)){
+								      <option value="@s.iso" selected>@s.name</option>	
+								    } else {
+								      <option value="@s.iso">@s.name</option>
+								    }	
+							      }							      								  							  						
+							     }			     	
+       					     </select>      					     
+       					   </div>
+              			 </li>
+              			 @if(request.session.get("username") != null && request.session.get("username") != None){
+              			 	<div class="btn-group pull-right">
+          	 		           <button type="button" class="btn btn-info" onclick="location.href='@controllers.backoffice.routes.AdminLogin.logout'">
+		  					   <i class="icon-user icon-white"></i> @{Messages("home.main.signout.lbl")}
+	    				       </button>       
+          			        </div>
+              			 }
+			            </ul>
+          			</div>
+          			@if(request.session.get("username") != null && request.session.get("username") != None){
+          			<div class="btn-group pull-right">
+          	 		     <button type="button" class="btn btn-info" onclick="location.href='/backoffice/admin'">
+		  <i class="icon-backward icon-white"></i> Back to Admin Control Panel
+	    </button>       
+          			</div>
+          			  }      			
+                </div>
+            </div>
+        </div>
+		</br></br></br></br>
+		
+        <div class="container">        
+            @content
+            <hr>
+	        <footer>
+	          <p>&copy; Restgate Commerce 2014</p>
+	        </footer>
+        </div>
+    
+    </body>
+</html>

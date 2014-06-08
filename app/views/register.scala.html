@@ -1,0 +1,67 @@
+@(registrationForm: Form[models.UserX])(implicit request: RequestHeader, flash: Flash, lang: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />     
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }      
+    </div>
+  </div>
+  
+}
+
+@inputError(field: Field) = {
+  
+  <div class="control-group @if(field.hasErrors) {error}">    
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />     
+      @if(field.hasErrors){
+        <span class="help-inline">         
+           @Messages(field.error.head.message)           
+        </span>
+      }      
+    </div>
+  </div>
+  
+}
+
+@mainX("Customer Registration" ) {
+  
+	@if(flash.data.contains("message")){		 
+		<div class="alert alert-success">@flash.get("message")</div>		   
+	}
+	@if(flash.data.contains("errormessage")){		 
+		<div class="alert alert-error">@flash.get("errormessage")</div>		   
+	}
+	@registrationForm.globalError.map { error =>		
+		<div class='row'>
+		  <div class="alert alert-error">@error.message</div>
+		</div>		
+	}
+	@registrationForm.globalError
+	
+	@form(action = routes.Register.register, 'class -> "form-horizontal", 'id -> "formone", 'name -> "formone") {
+		  
+		<fieldset>
+		  <legend>@{Messages("customer.heading")}</legend>
+		  <h4>@{Messages("customer.register.here")}</h4>       
+		   @input(registrationForm("email"), {Messages("customer.email.lbl")}, 'email)     
+		   @input(registrationForm("password.main"), {Messages("customer.pwd.lbl")}, 'password) 
+		   @input(registrationForm("password.confirm"), {Messages("customer.pwd.confirm.lbl")}, 'password)
+		   @inputError(registrationForm("password"))
+		       
+		</fieldset>
+  		<input type="submit" name="register" id="register" class="btn btn-primary" value="@Messages("customer.register.btn")"/>
+	
+	}   
+	
+}(request,lang)

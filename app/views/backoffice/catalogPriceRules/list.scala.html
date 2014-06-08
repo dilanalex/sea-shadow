@@ -1,0 +1,110 @@
+@(catalogPriceRules: List[models.CatalogPriceRules])(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@handleYesNo(value:Boolean)={
+	@if(value==true){Enabled.} else {Disabled.}
+}
+
+@cpanel("Catalog Price Rules", null) {
+
+  @if(flash.data.contains("message")){	
+    <div class="alert alert-success">@flash.get("message")</div>
+  } 	
+  @if(flash.data.contains("errormessage")){ 	
+   	<div class="alert alert-error">@flash.get("errormessage")</div>
+  }
+  <h1>Catalog Price Rules</h1><br/>
+	
+  <a class="btn btn-primary" id="add" href="@controllers.backoffice.routes.PriceRules.show(new ObjectId(), 1)">
+    <i class="icon-plus icon-white"></i>
+    Add rule
+  </a><br/><br/>
+  <ul id="sortable" class="nav nav-list">	
+  @catalogPriceRules.map { var x=0; cpr =>
+  <li>
+  <!--input type="hidden" value="@x" id="row_@x" name="row_@x"/-->	
+  <div id="RuleList@x" class="accordion" style="width: 50%">
+    <div class="accordion-group">
+      <div class="accordion-heading">        
+        <table>
+		  <tr>
+		    <td width="7%"><a style="display: inline;" href="#collapse@x" data-parent="#RuleList@x" data-toggle="collapse" class="accordion-toggle"><i class="icon-chevron-down"></i></td>
+		    <td width="88%"><a href="@controllers.backoffice.routes.PriceRules.show(cpr.id, 1)"><h4>@cpr.name</h4></a></td>
+		    <td><a class="btn btn-danger" href="#rule@x" data-toggle="modal"><i class="icon-remove-sign icon-white"></i></a></td>
+		  </tr>
+		</table>
+       	<div class="modal hide" id="rule@x">	       
+    		<div class="modal-body"><p>Do you really want to delete this rule?</p></div>
+    	    <div class="modal-footer">
+    			<a href="#" class="btn" data-dismiss="modal">No</a>
+    			<a href="@controllers.backoffice.routes.PriceRules.delete(cpr.id)" class="btn btn-primary">Yes</a>
+    	    </div>
+    	</div>
+      </div>
+      <div class="accordion-body in collapse" id="collapse@x" style="height: auto;">
+        <div class="accordion-inner">
+        @cpr.description  
+        </div>
+        <div class="accordion-inner">        
+        @handleYesNo(cpr.active) Customer Groups : @if(cpr.customerGroups.get.isEmpty){ 
+        											 All
+        										   } else { 
+        										     @CustomerGroup.customerGroups.map{ cg =>        		     			
+				                                       @if(cpr.customerGroups.get.contains(cg.id.toString)){ @cg.name |}				     	         
+				                                     }
+				                                   }				             
+        </div>
+      </div>
+    </div>                
+  </div>
+  </li>
+  @{x=x+1}
+  }
+  </ul>
+  	    
+  <script type="text/javascript">
+    $(function() {
+      $( "#sortable" ).sortable({    	
+        start: function(e, ui) {
+          // creates an temporary attribute on the element with the old index
+          $(this).attr('data-previndex', ui.item.index());
+          //alert('old Index='+ui.item.index());
+        },
+        update: function(e, ui) {
+          // gets the new and old index then removes the temporary attribute
+          var newIndex = ui.item.index();
+          //alert('newIndex='+newIndex);
+          var oldIndex = $(this).attr('data-previndex');
+          //alert('oldIndex1='+oldIndex);
+          //ajax update
+          jsRoutes.controllers.backoffice.PriceRules.updatePriorityOrder(oldIndex, newIndex).ajax({
+		      success: function(data) {
+		    		//alert(data);
+		      },
+		      error: function() {
+		        alert("Error!");
+		      }
+		  });
+		  //renumber();
+          $(this).removeAttr('data-previndex');
+          
+        }
+
+      });
+      
+      $( "#sortable" ).disableSelection();
+    });
+    
+    /* var renumber = function() {    	
+	    $('.cprList').each(function(i) {	    	
+	        $('input', this).each(function() {	        	
+	        	$(this).attr('name', $(this).attr('name').replace(/row\_.+?/g, 'row_' + i));
+	            $(this).attr('id', $(this).attr('id').replace(/row\_.+?/g, 'row_' + i));
+	            $(this).attr('value', $(this).attr('value').replace(/.+?/g, i));
+	        })
+	    })
+	} */
+  </script> 	
+}

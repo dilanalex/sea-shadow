@@ -1,0 +1,240 @@
+@(report:Report)(implicit request: RequestHeader, flash: Flash)
+
+@import play.api.i18n._
+@import views.html.helper._
+@import models._
+@import java.util.Date
+@import java.text.SimpleDateFormat
+
+
+@formatDate(id:String,date:Date)={ 
+	<input type="text" name="@id" id="@id" value ="@((new SimpleDateFormat("MM/d/yyyy")).format(date.getTime))">  
+}
+
+
+
+
+@cpanel("Report", null) {
+
+<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/datepicker.css")">
+<script type="text/javascript" charset="utf-8" src="@routes.Assets.at("javascripts/bootstrap-datepicker.js")">
+</script>
+
+
+
+
+ <form id="frmRefine" name="frmRefine" action="@controllers.backoffice.routes.Reports.showOrderReport" method="POST" >
+	<div class="tabbable  tabs-left" > <!-- Only required for left/right tabs -->
+	  <ul class="nav nav-tabs">
+	    <li class="active"><a href="#orders" data-toggle="tab">Orders</a></li>
+	    <li><a href="#products" data-toggle="tab">Products</a></li>
+	  </ul>
+	  <div class="tab-content">
+	    
+	    
+	    <div class="tab-pane active" id="orders">
+			<h3> @report.name </h3>
+			 <br>
+			 
+			<table>
+				<tr>
+					<td><strong>Interval  </strong></td>
+					
+			    </tr>
+			    <tr>
+			    	<td>From</td>
+					<td>To</td></tr>
+			    <tr>
+			       	<td> @formatDate("fromDate",report.fromDate)</td>
+					<td> @formatDate("toDate",report.toDate)</td>
+					<td>
+					 	<button 
+						 	type="button"
+						 	class="btn btn-primary"
+						 	id="btnDate" 
+						 	name="btnDate" 
+						 	onClick="submitForm();">Go
+						</button>
+					</td>
+			    </tr>
+			</table>    
+			    
+			<table class="table table-striped">
+			    @if(!report.reportFilters.isEmpty){
+			    	<Strong>Report Filters</Strong>
+			    	<br>
+			    	<p>Select a filter</p>				    
+				 
+				    @report.reportFilters.map{ filter =>
+						<tr>
+							<td>
+								<a data-toggle="modal" data-target="#popup"
+						    	href="@controllers.backoffice.routes.Reports.getFilterDataList(filter._1)">@filter._1</a>
+						    	
+						    	<input 
+						    		type="hidden" 
+						    		id="selectedFilterList_@filter._1" 
+							    	name="selectedFilterList_@filter._1" 
+							    	value="@if(filter._2 != null){@filter._2.selectedKeyList}">
+						    
+						    </td>
+						    
+						    
+						    <td>
+							    <span 
+							    	id="spanSelectedFilterDisplayList_@filter._1" 
+							    	name="selectedFilterDisplayList_@filter._1">
+							   		 @if(filter._2 != null){@filter._2.selectedDisplayList.toString}
+							    </span>
+							    <input 
+							    	type="hidden" 
+								    id="selectedFilterDisplayList_@filter._1" 
+								    name="selectedFilterDisplayList_@filter._1" 
+								    value="@if(filter._2 != null){@filter._2.selectedDisplayList.toString}">
+							 
+							  
+						    </td>
+						</tr>
+						}
+			    } 
+			    </table>
+			    
+			    
+			    <table  class="table table-striped">
+				    <tr>
+				     @if(report.scoreBoard){
+				   		  @report.scoreBoard.map{ score =>
+				  	 			<td>
+					  	 			<h3>@score.name</h3>
+					  	 			<p>@score.score</p>
+				  	 			</td>
+				  	 		}
+				    
+				    }
+				    </tr>
+				   
+			    </table>
+			     
+			    <table>
+			         <tr>
+					     @if(report.csvExports){
+					      <input type="hidden" id="isCsv" name="isCsv" value="false">
+					   		  @report.csvExports.map{ csvExport =>
+					  	 			<td>
+					  	 				<input type="hidden" id="csvType" name="csvType" value="">
+						  	 		    <a href="javascript:getCsv('@csvExport.csvType');"> @csvExport.csvLabel</a>
+					  	 			</td>
+					  	 		}
+					    
+					    }
+				    </tr>    
+			     </table>
+			    
+		       @if(report.dataList.recordHeaders){
+		       <table class="table table-striped"> 
+			       <thead>
+				       	 @report.dataList.recordHeaders.map { header=>	
+							<th>@header.toString</th>
+						}
+				   </thead>
+			
+				
+				 @if(report.dataList.recordList){
+			       	@report.dataList.recordList.map{ record=>
+						<tr>
+							@record.map{field =>
+								<td>@field</td>
+							}
+						</tr>
+					}
+				} else{
+				<br>
+				<p class="text-warning">No records found. Please try another criteria.</p>
+				}
+		    </table>
+		   
+		    
+	 
+		   	}
+	   		 
+	    </div>
+	    
+	    <div class="tab-pane" id="products">
+	      <p>These are the orders product vise.</p>
+	    </div>
+	    
+	    
+	  </div>
+	</div>
+</form>
+
+
+	<div class="modal hide" id="popup" tabindex="-1" role="dialog" aria-labelledby="popupLabel" aria-hidden="true">
+		
+	</div>
+	
+	   
+	
+	<script type="text/javascript" charset="utf-8">
+	
+	var startDate = new Date();
+	var endDate = new Date();
+	
+	function submitForm(){
+	
+		document.forms["frmRefine"].submit();
+		
+	}
+	
+	$('#fromDate')
+	    .datepicker()
+	    .on('changeDate', function(ev){
+	        if (ev.date.valueOf() > endDate.valueOf()){	        	
+	           $('#alert').show().text('The start date must be before the end date.');
+	        } else {
+	            //$('#alert').hide();
+	            startDate = new Date(ev.date);
+	            //$('#date-start-display').text($('#fromDate').data('date'));
+	        }
+	        $('#fromDate').datepicker('hide');
+	    });
+		
+		
+		$('#toDate')
+		    .datepicker()
+		    .on('changeDate', function(ev){
+		    //	alert("todate")
+		        if (ev.date.valueOf() < startDate.valueOf()){	        	
+		            $('#alert').show().text('The end date must be after the start date.');
+		        } else {
+		          //  $('#alert').hide();
+		            endDate = new Date(ev.date);
+		            //$('#date-end-display').text($('#toDate').data('date'));
+		        }
+		        $('#toDate').datepicker('hide');
+		    });	
+	
+	
+		$("a[data-toggle=modal]").click(function (e) {
+		  lv_target = $(this).attr('data-target')
+		  lv_url = $(this).attr('href')
+		  $(lv_target).load(lv_url)}
+		 )
+		 
+		 
+		function getCsv(type){
+				
+		 document.getElementById("isCsv").value = "true";
+		 document.getElementById("csvType").value = type;
+		 submitForm();
+		 document.getElementById("isCsv").value = "false";
+		 document.getElementById("csvType").value = "";
+		 
+		} 
+	
+	 
+	</script>
+
+}
+
+ 

@@ -1,0 +1,192 @@
+@(currentPage: helpers.Page[(models.Product)], currentOrderBy: Int, currentFilter: String)(implicit request: RequestHeader, flash:Flash, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+    controllers.backoffice.routes.Product.listproducts(newPage, newOrderBy.map { orderBy =>
+        if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+    }.getOrElse(currentOrderBy), currentFilter)
+}
+<div style="width: 550px;" id="maindiv">
+@header(orderBy: Int, title: String) = {
+    <th class="">
+        <a href="#">@title</a>
+    </th>
+}
+
+	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+	@if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+    	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+	
+	<h1><font style="margin-left: 10px;">Related Products</font></h1>
+	<br>
+	<div id="actions" style="margin-left: 5px;">
+	    <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by product name...">
+	    <input type="button" id="searchsubmit" value="Filter by name" class="btn btn-primary" onclick="filterProducts()">
+  </div>
+  <br>
+ 	@Option(currentPage.items).filterNot(_.isEmpty).map { products =>
+ 		<table class="table" id="relpopuptable" style="margin-left: 5px;">
+	    <thead>
+	      <tr>
+	        <th style="width: 1%">&nbsp;</th>
+	        @header(2, "Name")
+	        @header(3, "SKU")
+	        @header(4, "Price")
+	        <td></td>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      @products.map { 
+	        case (product) => {
+	          <tr id="@product.sku">
+	          	<td style="width: 1%">
+	          		<input type="checkbox" name="chk_prod" value="@product.sku" id="chk_prod" />
+	          	</td>
+	            <td style="width: 70%">
+	            	<a href="@controllers.backoffice.routes.Product.edit(product.id)">@product.title</a>
+	           	</td>
+	            <td style="width: 8%">
+	            	@product.sku
+	            </td>
+	            <td style="width: 5%">
+	            	@product.price
+	            </td>
+	          </tr>
+	        }
+	      }
+	    </tbody>
+  	</table>
+  	
+		<div id="pagination" class="pagination" style="margin-left: 5px;">
+	    <ul>
+	      @currentPage.prev.map { page =>
+	        <li class="prev">
+	            <a href="#" onclick="comeprevious(@page)">&larr; Previous</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="prev disabled">
+	            <a>&larr; Previous</a>
+	        </li>
+	      }
+	      <li class="current">
+	      	<a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + products.size) of @currentPage.total</a>
+	      </li>
+	      @currentPage.next.map { page =>
+	        <li class="next">
+	            <a href="#" onclick="gonext(@page)">Next &rarr;</a>
+	        </li> 
+	      }.getOrElse {
+	        <li class="next disabled">
+	            <a>Next &rarr;</a>
+	        </li>
+	      }
+	    </ul>
+		</div>
+		<div class="modal-footer" style="width: 530px;">
+		  <input type="hidden" name="relproducts" id="relproducts" value="">  		
+		  <a href="#" class="btn btn-success" onclick="prodSelect()">Add Selected</a>
+			<a href="#" class="btn" data-dismiss="modal" onclick="closeClicked()">Close</a>  
+		</div>  
+  	
+ 	}.getOrElse {
+	  <div class="well">
+	      <em>Nothing to display</em>
+	  </div>
+	}
+	
+	<script type="text/javascript">
+		
+		//Pagination next button call in pop up
+	  function gonext(page) {
+	    jsRoutes.controllers.backoffice.Product.listproducts((page),1,$("#searchbox").val()).ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      disableChecked();
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+	  }
+		//Pagination previous button call in pop up
+	  function comeprevious(page) {
+	    jsRoutes.controllers.backoffice.Product.listproducts((page),1,$("#searchbox").val()).ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      disableChecked();
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+		}
+		//Filtering products in pop up : Search products
+	  function filterProducts() {
+	    jsRoutes.controllers.backoffice.Product.listproducts(0,1,$("#searchbox").val()).ajax({
+	      success: function(data) {
+	      $("#maindiv").html(data);
+	      disableChecked();
+	      },
+	      error: function() {
+	        alert("Error!");
+	      }
+	    })
+    }
+	  //Renumbering related products after added to the parent screen
+	  //Arrange added products in proper order to save.
+	  var renumber = function() {
+	    $("#relprodlist").each(function() {
+	      $("input[type='hidden']", this).each(function(i) {
+	        $(this).attr('name', $(this).attr('name').replace(/relatedProducts\[.+?\]/g, 'relatedProducts[' + i + ']'));
+	        $(this).attr('id', 'relatedProducts[' + i + ']');
+	      })
+	    })
+		}
+	  
+	  values = new Array();
+	  dataOnPage = $("#relprodlist").html();
+	  startIndex = 0;
+	  //This is called when 'Add Selected' button clicked.
+	  //Selected list will be added to the parent window.
+	  //After added it renumber function will be called.
+	  function prodSelect(){
+		  if($("#relprodsize").val() > 0){
+			  startIndex = $('#relprodlist tr').length
+		  }else{
+			  startIndex = values.length;
+		  }
+		  values = [];
+		  $.each($("input[name='chk_prod']:checked"), function() {
+		    values.push($(this).val());
+		    $("#" + $(this).val()).hide();
+		  });
+		  if(values.length > 0){
+			  jsRoutes.controllers.backoffice.Product.listRelatedProducts(values.toString(), $('#relprodlist tr').length).ajax({
+		      success: function(data) {
+		    		data = dataOnPage+data;
+		        $("#relprodlist").html(data);
+		      },
+		      error: function() {
+		        alert("Error!");
+		      }
+		    });
+		  }else{
+			  alert("Please select a product.");
+		  }
+	    values = [];
+	  }
+	  
+	  //This is called when close button called.
+	  //Renuber is called with this event because--
+	  //prodSelect() function get related products using AJAX (Issue with AJAX call)
+	  function closeClicked(){
+		  renumber();
+	  }
+	</script>
+	</div>

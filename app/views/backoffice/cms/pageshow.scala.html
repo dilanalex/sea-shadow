@@ -1,0 +1,132 @@
+@(pageForm: Form[models.CMSPage])(implicit request: RequestHeader, flash: Flash)
+@import play.api.i18n._
+@import views.html.helper._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text) = {
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  name="@field.name" />
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+    </div>
+  </div>
+}
+
+@inputDiv(field: Field, label: String, fieldType: Symbol = 'text) = {
+  
+   <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+     <div  id="@field.id"  name="@field.name">@field.value</div>
+     	<input type="hidden" id="@field.id"  name="@field.name"value="">
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+    </div>
+  </div>
+   
+		   
+		  <style type="text/css" media="screen">
+    #content { 
+    position: relative;   
+    height: 400px;
+    }
+</style>
+		
+		     
+		<script src="@routes.Assets.at("javascripts/ace.js")" type="text/javascript"></script>
+<script>
+    var editor = ace.edit("content");
+    var $editor = $('#editor');
+
+    editor.setTheme("ace/theme/github");
+    editor.getSession().setMode("ace/mode/html");
+    function setediotrtohiddenfield(){    	
+   	 var code = editor.getSession().getValue();   	
+   	$('input[name="content"]').attr('value',code); 
+   	
+   }
+</script>
+}
+
+@inputError(field: Field) = {
+  <div class="control-group @if(field.hasErrors) {error}">
+    <div class="controls">
+      <input type="hidden"  id="@field.id"  name="@field.name" />
+      @if(field.hasErrors){
+        <span class="help-inline">
+           @Messages(field.error.head.message)
+        </span>
+      }
+    </div>
+  </div>
+}
+
+@inputTxtArea(field: Field, label: String, rows: Int, cols: Int) = {
+  <div class="control-group @if(field.hasErrors) {error}">
+    <label class="control-label" for="@field.id">@label</label>
+    <div class="controls">
+      <textarea rows="@rows" cols="@cols" id="@field.id" style="width: 100%;"  name="@field.name" class="input-xlarge">@field.value</textarea>     
+      @if(field.hasErrors){
+        <span class="help-inline">
+          @Messages(field.error.head.message)
+        </span>
+      }
+    </div>
+  </div>
+  
+}
+
+@main("Edit Pages", null) {
+<style type="text/css" media="screen">
+    
+</style>
+
+
+
+
+	@if(flash.data.contains("message")){
+		<div class="alert alert-success">@flash.get("message")</div>
+	}
+ 	@if(flash.data.contains("errormessage")){
+  	<div class="alert alert-error">@flash.get("errormessage")</div>
+	}
+  @pageForm.globalError.map { error =>
+	  <div class='row'>
+	    <div class="alert alert-error">@error.message</div>
+	  </div>
+  }
+  
+  <h1>Pages</h1>
+  
+	@form(action = controllers.backoffice.routes.CMSPages.save, 'class -> "form-vertical", 'id -> "pageForm", 'name -> "pageForm") {
+	    
+		<fieldset>			
+		   @input(pageForm("pageId"), "", 'hidden)
+		   @input(pageForm("title"), "Title", 'text)
+		   @input(pageForm("url"), "Page URL", 'text)
+		   @input(pageForm("label"), "Label", 'text)		  
+		   @inputDiv(pageForm("content"), "Content", 'text)		   
+		</fieldset>
+		
+		
+		<div class="form-actions">
+    		<a href="/backoffice/cms/pagelist">
+	    		<button type="button" class="btn btn-primary">
+			  		<i class="icon-edit"></i> Edit More Pages
+			  	</button>
+	  		</a>
+    		<button type="submit" onclick="javascript:setediotrtohiddenfield();" class="btn btn-primary">
+		  		<i class="icon-pencil"></i> Save
+	  		</button>
+	   </div> 
+	  
+	}
+	
+}

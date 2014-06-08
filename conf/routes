@@ -1,0 +1,175 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Old home page
+GET     /xx                         	controllers.ApplicationX.index
+
+# Users
+GET     /register                   	controllers.Register.index
+POST    /register                   	controllers.Register.register
+
+GET     /cart                      		controllers.Cart.show
+
+# These would not be gets as changing state for demo through easier to request
+POST    /cart/remove                	controllers.Cart.remove
+POST    /cart/add                   	controllers.Cart.add
+POST    /cart/delete                	controllers.Cart.delete
+
+# Products
+GET     /products                   	controllers.Products.index
+GET     /products/c/*path           	controllers.Products.search(path: String)
+GET     /products/:id               	controllers.Products.show(id: ObjectId)
+
+# Authentication
+GET     /loginX                     	controllers.ApplicationX.login
+POST    /loginX                     	controllers.ApplicationX.authenticate
+GET     /logoutX                    	controllers.ApplicationX.logout
+
+# Profile
+GET     /accountX                   	controllers.ProfileX.view
+GET     /account                   		controllers.Profile.viewUsr
+POST    /accountX                   	controllers.ProfileX.updateUser
+POST    /account                    	controllers.Profile.updateUsers
+
+# Checkout
+GET     /ordercheckout              	controllers.OrderCheckOut.checkout
+POST    /saveOrderAddr              	controllers.OrderCheckOut.submit
+POST    /saveshippingopt                controllers.OrderCheckOut.saveshippingopt
+GET     /paymentValidator               controllers.OrderCheckOut.paymentValidator
+POST    /confirmation                   controllers.OrderCheckOut.confirmation
+GET     /confirmation/:id               controllers.OrderCheckOut.confirmationNew(id: ObjectId)
+
+# Orders
+GET		/orders                     	controllers.Orders.list
+GET     /orders/:id                 	controllers.Orders.show(id: ObjectId)
+
+#Backoffice products
+GET    /backoffice/products         	controllers.backoffice.Product.list
+GET    /backoffice/product/:id      	controllers.backoffice.Product.edit(id: ObjectId)
+GET    /backoffice/productdel/:id   	controllers.backoffice.Product.delete(id: ObjectId)
+POST   /backoffice/productsave      	controllers.backoffice.Product.save
+POST   /backoffice/deleteImage      	controllers.backoffice.Product.deleteImage
+POST   /backoffice/replaceImage     	controllers.backoffice.Product.replaceImage
+GET    /backoffice/productlist          controllers.backoffice.Product.listproducts(p:Int ?= 0, s:Int ?= 2, f ?= "")
+POST   /backoffice/relatedproductlist    controllers.backoffice.Product.listRelatedProducts(skuList: String, startIndex: Int)
+
+#BackOffice Countries
+GET    /backoffice/countries        	controllers.backoffice.Countries.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+GET    /backoffice/countries/:id    	controllers.backoffice.Countries.show(id: ObjectId,tab: Int)
+GET    /backoffice/countrydel/:id   	controllers.backoffice.Countries.delete(id: ObjectId)
+POST   /backoffice/countrysave      	controllers.backoffice.Countries.save
+GET    /backoffice/countrylist      	controllers.backoffice.Countries.autoComplete(term: Option[String] ?= None)
+
+#Backoffice currencies
+GET    /backoffice/currencies           controllers.backoffice.Currencies.list()
+GET    /backoffice/currencies/:id       controllers.backoffice.Currencies.show(id: ObjectId)
+POST   /backoffice/currencysave         controllers.backoffice.Currencies.save
+GET    /backoffice/currencydel/:id      controllers.backoffice.Currencies.delete(id: ObjectId)
+GET    /backoffice/setCurrency          controllers.backoffice.Currencies.setCurrency(iso: String)
+
+#Backoffice states
+GET    /backoffice/states/:id       	controllers.backoffice.States.show(id: ObjectId,countryId: ObjectId)
+POST   /backoffice/statessave       	controllers.backoffice.States.save
+GET    /backoffice/statedel         	controllers.backoffice.States.delete(id: ObjectId,countryId: ObjectId)
+GET    /backoffice/statelist	    	controllers.backoffice.States.autoCompleteState(term: Option[String] ?= None, cid: Option[String] ?= None)
+GET    /backoffice/countrystatelist	    controllers.backoffice.States.getCountryStateList(countryCode: String)
+
+#Backoffice tax
+GET    /backoffice/tax              	controllers.backoffice.TaxRates.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+GET    /backoffice/tax/:id          	controllers.backoffice.TaxRates.show(id: ObjectId)
+POST   /backoffice/taxsave          	controllers.backoffice.TaxRates.save
+GET    /backoffice/taxdel/:id       	controllers.backoffice.TaxRates.delete(id: ObjectId)
+
+#Backoffice shipping options
+GET    /backoffice/shippingopt      	controllers.backoffice.ShippingOptions.list
+GET    /backoffice/shippingopt/:id  	controllers.backoffice.ShippingOptions.show(id: ObjectId)
+POST   /backoffice/shippingoptsave  	controllers.backoffice.ShippingOptions.save
+GET    /backoffice/shippingoptdel/:id   controllers.backoffice.ShippingOptions.delete(id: ObjectId)
+GET    /backoffice/shippingopttable     controllers.backoffice.ShippingOptions.findShipTRlist(country: String, states: String)
+
+#Backoffice productUpload
+GET    /backoffice/productupload                controllers.backoffice.ProductUpload.index
+POST   /backoffice/productupload/upload         controllers.backoffice.ProductUpload.upload
+POST   /backoffice/productupload/uploadimage    controllers.backoffice.ProductUpload.uploadimage
+
+#Backoffice pagelist
+GET    /backoffice/cms/pagelist                 controllers.backoffice.CMSPages.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+GET    /backoffice/cms/page/:id                 controllers.backoffice.CMSPages.show(id: ObjectId)
+POST   /backoffice/cms/pagesave                 controllers.backoffice.CMSPages.save
+GET    /basic/*pattern                          controllers.backoffice.CMSPages.load(pattern: String)
+
+#Backoffice CatalogPriceRules
+GET    /backoffice/catalogpricerules      	    controllers.backoffice.PriceRules.lists
+GET    /backoffice/catalogpricerulesdel/:id   	controllers.backoffice.PriceRules.delete(id: ObjectId)
+GET    /backoffice/catalogpricerules/:id  		controllers.backoffice.PriceRules.show(id: ObjectId, tab: Int)
+POST   /backoffice/catalogpricerulessave  		controllers.backoffice.PriceRules.save
+GET    /backoffice/cpraddcondition              controllers.backoffice.PriceRules.addCondition(catalogPriceRuleId: String ?="")
+GET    /backoffice/cprproductlist               controllers.backoffice.PriceRules.listproducts(p:Int ?= 0, s:Int ?= 2, f ?= "", opt:String ?= "", op:String ?= "", id1:String ?= "", id2:String ?= "", tr:String ?= "")
+POST   /backoffice/cprselectedproducts    		controllers.backoffice.PriceRules.selectedProducts(idList: String, startIndex: Int, opt: String, op: String, tr: String ?= "", id: String ?= "")
+GET    /backoffice/cprdisplayselectedproducts  	controllers.backoffice.PriceRules.displaySelectedProducts(idList: String, opt: String)
+GET    /backoffice/cprdisplayselectedproduct  	controllers.backoffice.PriceRules.displaySelectedProduct(id: String, opt: String)
+GET    /backoffice/cprupdatepriorityorder  	    controllers.backoffice.PriceRules.updatePriorityOrder(oldIndex: String, newIndex: String)
+GET    /backoffice/cpraddconditionset           controllers.backoffice.PriceRules.addConditionSet(startIndex: Int, opt: String, op: String, v: String, tr: String ?= "", id: String ?= "")
+
+#Backoffice reports
+GET     /backoffice/reports                     controllers.backoffice.Reports.show
+GET     /backoffice/reports/order               controllers.backoffice.Reports.showOrderReport
+POST    /backoffice/reports/order               controllers.backoffice.Reports.showOrderReport
+GET     /backoffice/reports/filtervaluelist     controllers.backoffice.Reports.getFilterDataList(filterName:String)
+
+#Admins save,edit,delete
+GET     /backoffice/admin						controllers.backoffice.Admins.list
+GET     /backoffice/admin/:id                   controllers.backoffice.Admins.show(id: ObjectId)
+POST    /backoffice/adminsave                   controllers.backoffice.Admins.save
+GET     /backoffice/listusers                   controllers.backoffice.Admins.listusers()
+GET     /backoffice/admindelete/:id             controllers.backoffice.Admins.delete(id: ObjectId)
+
+GET     /backoffice/orderprocess                controllers.backoffice.OrderProcess.listOrders
+GET     /backoffice/orderprocess/:id            controllers.backoffice.OrderProcess.show(id: ObjectId)
+POST    /backoffice/orderprocess/changestatus   controllers.backoffice.OrderProcess.changeStatus(status : String, id : String)
+
+GET     /backoffice/admin                       controllers.backoffice.AdminLogin.index
+GET     /backoffice/login                       controllers.backoffice.AdminLogin.login
+POST    /backoffice/login                       controllers.backoffice.AdminLogin.authenticate
+GET     /backoffice/logout                      controllers.backoffice.AdminLogin.logout
+
+
+#Tools
+GET    /images/getimage                         controllers.utils.Common.getImage(imageName: String,width: Int,height: Int)
+GET    /backoffice/updatecurrencyrates          controllers.utils.Common.updateCurrencyRates
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                           controllers.Assets.at(path="/public", file)
+
+# Products full text search
+GET     /productssearch                         controllers.Products.searchProduct(searchtext: String)
+
+# Home page
+GET     /                                       controllers.Application.index
+GET     /user                                   controllers.Application.login
+
+# Login page
+GET     /login                                  securesocial.controllers.LoginPage.login
+GET     /logout                                 securesocial.controllers.LoginPage.logout
+
+# User Registration
+GET     /signup                                 securesocial.controllers.Registration.signUp
+POST    /signup                                 securesocial.controllers.Registration.handleSignUp
+
+# Providers entry points
+GET     /authenticate                           controllers.Application.index
+GET     /authenticate/                          controllers.Application.index
+GET     /authenticate/:provider                 securesocial.controllers.LoginPage.authenticate(provider)
+POST    /authenticate/:provider                 securesocial.controllers.LoginPage.authenticateByPost(provider)
+
+# Javascript routing
+GET     /javascripts/routes                     controllers.Application.javascriptRoutes
+
+#Payments
+GET    /paypalSetExpressCheckout                controllers.Payments.paypalSetExpressCheckout
+GET    /paypalGetExpressCheckoutDetails         controllers.Payments.paypalGetExpressCheckoutDetails
+GET    /paypalDoExpressCheckoutPayment          controllers.Payments.paypalDoExpressCheckoutPayment
+
+
+

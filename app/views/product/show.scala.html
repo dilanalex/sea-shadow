@@ -1,0 +1,100 @@
+@(user: securesocial.core.SocialUser, product: models.Product, 
+    taxonomy: Taxonomy = null,
+    relatedProducts: List[models.Product] = List(),
+    reviews: List[models.Reviews] = List(),
+    baseBreadCrumbs: Map[String, play.api.mvc.Call] =
+      Map("Products" -> routes.Products.index))(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Product Detail", user, product.metaDescription.getOrElse( "" ), product.metaKeywords.getOrElse( "" )) {
+   
+   
+  <!-- Image Carousel css -->
+  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/imagecarousel.svwp_style.css")" type="text/css" media="screen" />
+  
+  
+   
+  
+  <div class="row-fluid">
+    <div class="span12">
+	  @shared._breadcrumb(baseBreadCrumbs, taxonomy)
+	</div>
+  </div>
+  
+  <div class="row-fluid">
+    <div class="span5">     
+     <div id="image-carousel" name="image-carousel"  class="svwp">
+			<ul>
+				@product.image.map{  image=>
+					<li><img alt="" src="/images/getimage?imageName=@image&width=280&height=374" /></li>    
+				    
+				   }
+							
+			</ul>
+		</div>	
+    </div>
+    <div class="span7">
+      <h1>@product.title</h1>
+      <h2>@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,product.price)</h2>
+      
+      @form(action = routes.Cart.add) { 
+        <input type="hidden" id="productid" name="productid" value="@product.id">    
+        <input type="submit" name="addproduct" id="addproduct" 
+    	  class="btn btn-primary btn-large" value="@Messages("product.add.basket.btn") »" />
+  	  }
+      
+      <div class="description">
+        <p>@product.description</p>
+      </div>
+    </div>
+    @if(!relatedProducts.isEmpty) {	
+	  <div class="span5">	
+	    <h3>@{Messages("product.related.products")}</h3>
+	  </div>  
+	  <div class="span7">					
+	    @relatedProducts.grouped(4).map { row =>					      
+	      <div class="row-fluid">				      	      
+		    @row.map { product => 
+		      <div class="span3 product">
+		    	<a href="@routes.Products.show(product.id)">
+		    	  <img src="/images/getimage?imageName=@product.image.head&width=83&height=111">
+		    	  <h4 class="title">@product.title</h4>
+		    	  <div class="price">@CurrencyConvertor.getSymbol(request) @CurrencyConvertor.getRate(request,product.price)</div>
+		    	</a>
+		      </div>		      	 
+		    }
+		  </div>
+		}	
+	  </div>
+	}
+  </div>
+  </br>
+  </br>
+  @if(!reviews.isEmpty) {
+  	<div  class="row-fluid">
+  	<h3>Product Reviews</h3>
+  	@reviews.map { review =>  
+  	<table class="table table-striped">
+  		<tr>
+  			<td>
+  				<div><b>@review.title</b></div>
+  				<div>@review.text</div>
+  			</td>
+  		</tr>
+  		
+    </table>
+  	}
+  </div>
+  }
+  <!--Start image Carousel changes -->
+  
+  <script src="@routes.Assets.at("javascripts/jquery.timers-1.2.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/jquery.slideViewerPro.1.0.js")" type="text/javascript"></script> 
+  <script src="@routes.Assets.at("javascripts/runcarousel.js")" type="text/javascript"></script>
+  
+	
+  <!--End image Carousel changes -->
+}

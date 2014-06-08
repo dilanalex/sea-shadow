@@ -1,0 +1,178 @@
+@(taxRateForm: Form[models.Tax], rateList:List[models.Rate])(implicit request: RequestHeader,  flash: Flash,  l: Lang=Lang("en"))
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@input(field: Field, label: String, fieldType: Symbol = 'text, classname: String, dataurl: String, condition: String) = {
+  <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left; margin-left: 5px;">
+    <div class="controls">
+      <input  type="@fieldType.name" value="@field.value" id="@field.id"  
+      name="@field.name" class="@classname"  @if(dataurl != ""){data-url="@dataurl" onfocus="autoComplete(this.id, '@condition')"}
+         />
+      @if(dataurl != ""){
+      	<input  type="hidden" value="@field.value" id="hid_@field.id" name="hid_@field.name" />
+      }   
+    </div>
+    
+  </div>
+}
+
+
+@informationGroup(field: Field, className: String = "profile") = {
+@*inputError(field("rate"))*@
+	<div class="twipsies well @className" >
+	    @input(field("country"), {Messages("backoffice.tax.rate.country")}, 'text, "autocomplete span2", "/backoffice/countrylist", "country")
+	    @input(field("state"), {Messages("backoffice.tax.rate.state")}, 'text, "span2", "/backoffice/statelist", "state")
+	    @input(field("zipCode"), {Messages("backoffice.tax.rate.zip")}, 'text, "span1", "", "")
+	    @input(field("city"), {Messages("backoffice.tax.rate.city")}, 'text, "span2", "", "")
+	    @input(field("rate"), {Messages("backoffice.tax.rate.rate")}, 'text, "span1", "", "")
+	    @input(field("priority"), {Messages("backoffice.tax.rate.priority")}, 'text, "span1", "", "")
+	    @input(field("taxName"), {Messages("backoffice.tax.rate.name")}, 'text, "span2", "", "")
+	    @*input(field("compound"), {Messages("backoffice.tax.rate.compound")}, 'checkbox, "span1", "", "")*@
+	    <div class="control-group @if(field.hasErrors) {error}" style="display: inline; float: left; margin-left: 5px;">
+	     <div class="controls">
+	 	   <input type="checkbox" id="@field("compound").id" name="@field("compound").name" value="true" @if(field("compound").value.isDefined){ checked}/> 
+	 	 </div>
+		</div>
+	</div>
+}
+
+@cpanel({Messages("backoffice.tax.tab1.head1")}, null) {
+	@if(taxRateForm.hasErrors) {	
+	  <div class="alert alert-error">
+	  	<p><strong></strong> Please fix all errors.<br/>(i.e: @taxRateForm.errors.head.message)</p>
+	  </div>	  
+	}
+    @if(flash.data.contains("message")){	
+		<div class="alert alert-success">@flash.get("message")</div>		  
+	} 	
+ 	@if(flash.data.contains("errormessage")){ 	
+  	<div class="alert alert-error">@flash.get("errormessage")</div>	
+	}
+    @taxRateForm.globalError.map { error =>        
+	  <div class='row'>
+	    <div class="alert alert-error">@error.message</div>
+	  </div>        
+    }  
+	@helper.form(action = controllers.backoffice.routes.TaxRates.save) {
+		<div class="tabbable tabs-top">
+			<ul class="nav nav-tabs">
+     		<li class="active"><a data-toggle="tab" href="#lA">@{Messages("backoffice.tax.new.tab1")}</a></li>
+     		<li ><a data-toggle="tab" href="#lB">@{Messages("backoffice.tax.new.tab2")}</a></li>
+    	</ul>
+    	<div class="tab-content">
+    		<div id="lA" class="tab-pane active">
+    			<fieldset>
+				     <legend>@{Messages("backoffice.tax.tab1.head1")}</legend>
+				     @input(taxRateForm("taxId"), "", 'hidden, "", "", "")
+				     @inputText(taxRateForm("name"), '_label -> {Messages("backoffice.tax.name.lbl")})
+				     @inputText(taxRateForm("description"), '_label -> {Messages("backoffice.tax.desc.lbl")})
+				     <div class="controls">
+				  		<input type="checkbox"  id="@taxRateForm("defaultFlag").id" 
+				 		 name="@taxRateForm("defaultFlag").id" value="true" 
+				 		 @if(taxRateForm("defaultFlag").value.isDefined){ checked }/>
+				  		 <strong>@{Messages("backoffice.tax.default")}</strong><br>
+					 </div>
+				</fieldset>
+    		</div>
+    		<div id="lB" class="tab-pane ">
+        	<fieldset>
+				 		<table class="table table-striped">
+				 			<thead>
+				 				<tr>
+									<th width="200px;">@{Messages("backoffice.tax.rate.country")}</th>
+									<th width="175px;">@{Messages("backoffice.tax.rate.state")}</th>
+									<th width="75px;">@{Messages("backoffice.tax.rate.zip")}</th>
+									<th width="175px;">@{Messages("backoffice.tax.rate.city")}</th>
+									<th width="75px;">@{Messages("backoffice.tax.rate.rate")}</th>
+									<th width="75px;">@{Messages("backoffice.tax.rate.priority")}</th>
+									<th width="175px;">@{Messages("backoffice.tax.rate.name")}</th>
+									<th width="75px;">@{Messages("backoffice.tax.rate.compound")}</th>
+									<th width="10%;">&nbsp;</th>
+								</tr>
+				 			</thead>
+				 		</table>
+		    		<legend>Rates</legend>
+				    <div id="profiles">
+					    @if(rateList.isEmpty) {	
+								@informationGroup(taxRateForm("rate[0]"),className = "profile")
+	  					} else {
+	  						 @rateList.map{ var x = 0; image=>
+					    	 	 @informationGroup(taxRateForm("rate["+x+"]"),className = "profile")
+					    	 	 @{x=x+1}
+					    	 }
+	  					}
+			         <div class="manage" align="right">
+		               <a class="addProfile btn btn-success">
+					     <i class="icon-plus icon-white"></i>@{Messages("backoffice.tax.rate.addnew")}
+					   </a>
+		             </div>
+				     </div>
+		 	</fieldset>
+      	</div>
+    	</div>
+		</div>
+		<div class="form-actions">
+		    <input type="submit" class="btn btn-primary" value="Save">
+		    @if(!rateList.isEmpty){
+			    <a class="btn btn-danger" href="#@taxRateForm("taxId").value" data-toggle="modal"><i class="icon-trash icon-white"></i> Delete</a>
+		    	<div class="modal hide" id="@taxRateForm("taxId").value">	       
+		    		<div class="modal-body"><p>Do you really want to delete this Tax Class?</p></div>
+		    	    <div class="modal-footer">
+		    			<a href="#" class="btn" data-dismiss="modal">No</a>
+		    			<a href="@controllers.backoffice.routes.TaxRates.delete(new ObjectId(taxRateForm("taxId").value.get))" class="btn btn-primary">Yes</a>
+		    	    </div>
+	    	    </div>
+    	  }
+    	  <a class="btn btn-info" href="/backoffice/tax"><i class="icon-list icon-white"></i> Back</a>	 
+		</div>
+	}
+	<script type="text/javascript" charset="utf-8">
+		$('.removeProfile').live('click', function(e) {
+	     $(this).parents('.profile').remove()
+	     renumber()
+	  })
+	  $('.addProfile').live('click', function(e) {
+	    var template = $('.profile')
+	    var templatehtml = template.html().replace(/value="([^\\"\^true]|\\")*"/g,'value=""')
+	    template.last().after('<div class="twipsies well profile">' + templatehtml + '</div>')
+	    renumber()
+		})
+		var renumber = function() {
+	    $('.profile').each(function(i) {	    	
+	        $('input', this).each(function() {
+	            $(this).attr('name', $(this).attr('name').replace(/rate\[.+?\]/g, 'rate[' + i + ']'));
+	            $(this).attr('id', $(this).attr('id').replace(/rate\_.+?\_/g, 'rate_' + i + '_'));	            
+	        })
+	    })
+		}
+	  function autoComplete(id, condition){
+		  if(condition == "country"){
+			  $(("#"+id)).each( function() {
+				  var $input = $(this);
+				  var serverUrl = $input.data('url');
+				  $input.autocomplete({
+				   source:serverUrl,
+				   select: function(event, ui) {
+				   	$("#hid_"+id).val(ui.item.value);
+				   }
+				 });
+				}); 
+		  }else if(condition == "state"){
+			  $(("#"+id)).each( function() {
+				  var $input = $(this);
+				  var serverUrl = $input.data('url')+"?cid="+	
+						  $("#hid_"+id.replace("state","country")).val();
+				  if($("#hid_"+id.replace("state","country")).val() == "" ||
+						 $("#"+id.replace("state","country")).val() == ""){
+					  serverUrl = [{"label":"* - Any State","value":"*"}]
+				  }
+				  $input.autocomplete({
+				   source:serverUrl,
+				   highlight: true
+				 });
+				});   
+		  }
+	  }
+	</script>
+}

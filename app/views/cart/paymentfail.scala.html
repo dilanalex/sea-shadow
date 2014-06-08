@@ -1,0 +1,14 @@
+@(user: securesocial.core.SocialUser)(implicit request: RequestHeader, l: Lang=Lang("en"))
+
+@import play.api.i18n._
+@import views.html.helper._
+@import helpers._
+
+@main("Payment Failed", user) {
+  <h1>Payment Failed</h1>	
+  <br/>
+  <br/>
+  <h4> Your payment was unsuccessful. Please contact our customer service.</h4>	
+  <br/>
+  
+}
