@@ -1,0 +1,17 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+.table_thumbnail_image{
+	height: 100px;
+	width: 75px;
+}
+
+.table_form{
+	display: inline;
+}
+
+.input_small{
+	width: 30px;
+}
